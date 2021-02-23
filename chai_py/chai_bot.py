@@ -14,8 +14,8 @@ class ChaiBot:
         self.setup_logger()
 
     async def on_message(self, update: Update) -> str:
-        """
-        Event called when the bot receives a message.
+        """Event called when the bot receives a message.
+
         @param update:
         @return:
             String containing the reply.
@@ -23,11 +23,11 @@ class ChaiBot:
         raise NotImplementedError
 
     async def get_messages(self, conversation_id: str) -> List[Message]:
-        """
-        Event called when the bot receives a message.
+        """Fetches a list of messages for the specified conversation.
+
         @param conversation_id:
         @return:
-            List of messages in the conversation, sorted by newest-first.
+            List of messages in the conversation, sorted by increasing timestamp (i.e. oldest first).
         """
         raise NotImplemented
 
