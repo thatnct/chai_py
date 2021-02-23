@@ -34,7 +34,7 @@ class TRoom:
         print(f"<<< {message}")
         self.messages.append(
             Message(
-                sender_name='local_dev',
+                sender_uid='__local_dev',
                 timestamp=timestamp,
                 message_kind=MessageKind.TEXT,
                 content=message,
@@ -53,7 +53,7 @@ class TRoom:
             print(f">>> {result}")
             self.messages.append(
                 Message(
-                    sender_name=bot.__class__.__name__,
+                    sender_uid=bot.uid,
                     timestamp=timestamp,
                     message_kind=MessageKind.TEXT,
                     content=result,

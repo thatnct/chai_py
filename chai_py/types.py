@@ -21,7 +21,7 @@ class MessageKind(Enum):
 
 @dataclass
 class Message:
-    sender_name: str
+    sender_uid: str
     timestamp: int
     message_kind: MessageKind
     content: str
