@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from enum import auto, Enum
 
 
 @dataclass
@@ -11,3 +12,16 @@ class LatestMessage:
 class Update:
     conversation_id: str
     latest_message: LatestMessage
+
+
+class MessageKind(Enum):
+    TEXT = auto()
+    IMAGE = auto()
+
+
+@dataclass
+class Message:
+    sender_name: str
+    timestamp: int
+    message_kind: MessageKind
+    content: str
