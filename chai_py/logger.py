@@ -35,4 +35,3 @@ class ColoredFormatter(logging.Formatter):
                 'CRITICAL': Fore.RED + Back.WHITE + Style.BRIGHT,
             }
         )
-
