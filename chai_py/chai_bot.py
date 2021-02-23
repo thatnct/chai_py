@@ -1,9 +1,17 @@
-from .types import Update
+import logging
+import sys
+from typing import List
+
+from .logger import ColoredFormatter
+from .types import Update, Message
 
 
 class ChaiBot:
     def __init__(self, uid: str):
         self.uid = uid
+        self.logger = logging.getLogger(self.__class__.__name__)
+
+        self.setup_logger()
 
     async def on_message(self, update: Update) -> str:
         """
@@ -14,20 +22,18 @@ class ChaiBot:
         """
         raise NotImplementedError
 
-    async def get_state(self) -> dict:
+    async def get_messages(self, conversation_id: str) -> List[Message]:
         """
-        Fetches bot state.
-        :return:
-            State [dict]
+        Event called when the bot receives a message.
+        @param conversation_id:
+        @return:
+            List of messages in the conversation, sorted by newest-first.
         """
-        # TODO: Implement getting state from Firebase
         raise NotImplemented
 
-    async def set_state(self, state: dict):
-        """
-        Sets bot's state. State has to be JSON-serializable.
-        :param state:
-        :return:
-        """
-        # TODO: Implement setting state in Firebase
-        raise NotImplemented
+    def setup_logger(self):
+        formatter = ColoredFormatter.default_chai_formatter()
+        handler = logging.StreamHandler(sys.stdout)
+        handler.setFormatter(formatter)
+        self.logger.addHandler(handler)
+        self.logger.setLevel(logging.INFO)
