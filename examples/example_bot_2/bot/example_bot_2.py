@@ -4,8 +4,7 @@ from chai_py import ChaiBot, Update
 class ExampleBot2(ChaiBot):
     STRING = 'hi'
 
-    def __init__(self, uid: str):
-        super().__init__(uid)
+    def setup(self):
         self.logger.info("Hello, world!")
         self.logger.info(f"Listening for '{self.STRING}'.")
 

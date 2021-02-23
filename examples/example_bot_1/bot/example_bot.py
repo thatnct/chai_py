@@ -2,8 +2,7 @@ from chai_py import ChaiBot, Update
 
 
 class ExampleBot(ChaiBot):
-    def __init__(self, uid: str):
-        super().__init__(uid)
+    def setup(self):
         self.logger.info("Hello, world!")
         self.logger.info("Pretending to setup: nltk.download('punkt')")
 
