@@ -3,7 +3,8 @@ import time
 import uuid
 from typing import Sequence
 
-from chai_py import ChaiBot, Update, LatestMessage, Message, MessageKind
+from .chai_bot import ChaiBot
+from .types import Update, LatestMessage, Message, MessageKind
 
 
 class TRoom:
