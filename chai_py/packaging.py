@@ -18,15 +18,30 @@ from .chai_bot import ChaiBot
 
 @dataclass
 class Metadata:
+    """Information required for bot deployment."""
+    # Name of the bot.
     name: str
+    # Profile image for the bot. Has to be a valid URL.
     image_url: str
+    # The alphanumeric part of a hex color code. (E.g. ffffff)
     color: str
+    # Developer Unique ID.
     developer_uid: str
+    # Description of the bot.
     description: str
+    # Python class (N.B. not object!) that inherits from ChaiBot.
     input_class: Type[ChaiBot]
 
 
 def package(metadata: Metadata):
+    """Packages the chatbot into a single archive for deployment.
+
+    Performs some preliminary checks on the metadata.
+    Creates a package.zip file in the directory containing the file that contains the bot class.
+
+    :param metadata:
+    :return:
+    """
     print("Running verification checks on metadata.")
     assert isinstance(metadata.name, str)
     assert len(metadata.name) >= 3, "Bot name has to be at least 3 characters"
@@ -62,6 +77,7 @@ def package(metadata: Metadata):
             if '__pycache__' in names:
                 return ['__pycache__']
             return []
+
         shutil.copytree(bot_file.parent, temp_dir, dirs_exist_ok=True, ignore=ignore)
         # Write metadata.json
         with (Path(temp_dir) / "metadata.json").open("w") as f:
