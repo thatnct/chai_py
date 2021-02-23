@@ -26,14 +26,14 @@ class Metadata:
     input_class: Type[ChaiBot]
 
 
-def package(directory: Path, metadata: Metadata):
+def package(metadata: Metadata):
     print("Running verification checks on metadata.")
     assert isinstance(metadata.name, str)
     assert len(metadata.name) >= 3, "Bot name has to be at least 3 characters"
 
     try:
         verify_image_url(metadata.image_url)
-    except Exception as e:
+    except Exception:
         raise ValueError(f"Could not verify image url ({metadata.image_url})")
 
     assert isinstance(metadata.color, str)
@@ -68,9 +68,10 @@ def package(directory: Path, metadata: Metadata):
             json.dump(metadata_dict, f)
 
         # Create zip
-        with (bot_file.parent / "package.zip").open("wb") as f:
+        zip_path = bot_file.parent / "package.zip"
+        with zip_path.open("wb") as f:
             zipfile_from_folder(temp_dir, f)
-        print("Created zip package.")
+        print(f"Created zip package at {zip_path}.")
 
 
 def verify_image_url(url: str):
