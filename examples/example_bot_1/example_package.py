@@ -1,4 +1,4 @@
-from chai_py.packaging import package, Metadata
+from chai_py import package, Metadata
 from bot.example_bot import ExampleBot
 
 package(
