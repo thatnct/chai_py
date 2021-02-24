@@ -20,7 +20,11 @@ class TRoom:
 
     async def _loop(self):
         while True:
-            message = input("Enter your message: ")
+            try:
+                message = input("Enter your message: ")
+            except KeyboardInterrupt:
+                print("Interrupted TRoom.")
+                break
             await self.send_message(message)
 
     def setup_bots(self):
