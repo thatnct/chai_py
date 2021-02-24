@@ -47,6 +47,7 @@ class ChaiBot:
         formatter = ColoredFormatter.default_chai_formatter()
         handler = logging.StreamHandler(sys.stdout)
         handler.setFormatter(formatter)
+        self.logger.handlers = []
         self.logger.addHandler(handler)
         self.logger.setLevel(logging.INFO)
 
