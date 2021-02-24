@@ -65,7 +65,7 @@ def package(metadata: Metadata):
         'developerUid': metadata.developer_uid,
         'description': metadata.description,
         'inputFile': bot_file.stem,
-        'input_class': metadata.input_class.__name__,
+        'inputClass': metadata.input_class.__name__,
     }
     print("Prepared metadata:")
     pprint.pprint(metadata_dict)
