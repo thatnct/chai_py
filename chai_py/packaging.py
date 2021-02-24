@@ -5,6 +5,7 @@ import os
 import pprint
 import re
 import shutil
+import stat
 import tempfile
 from dataclasses import dataclass
 from pathlib import Path
@@ -78,7 +79,7 @@ def package(metadata: Metadata):
                 return ['__pycache__']
             return []
 
-        shutil.copytree(bot_file.parent, temp_dir, dirs_exist_ok=True, ignore=ignore)
+        copytree(bot_file.parent, temp_dir, ignore=ignore)
         # Write metadata.json
         with (Path(temp_dir) / "metadata.json").open("w") as f:
             json.dump(metadata_dict, f)
@@ -120,3 +121,42 @@ def zipfile_from_folder(folder: AnyStr, file):
                 if os.path.isfile(filename):  # regular files only
                     arcname = os.path.join(os.path.relpath(root, folder), file)
                     zip_archive.write(filename, arcname)
+
+
+def copytree(src, dst, symlinks=False, ignore=None):
+    """Copies files from src to dst.
+
+    Taken from https://stackoverflow.com/a/22331852.
+    Necessitated by Python 3.7 environment; Python 3.8's shutil.copytree can be used directly
+    as it has the necessary dirs_exist_ok argument.
+
+    :param src: Source directory
+    :param dst: Target directory
+    :param symlinks:
+    :param ignore: Callable
+    :return:
+    """
+    if not os.path.exists(dst):
+        os.makedirs(dst)
+        shutil.copystat(src, dst)
+    lst = os.listdir(src)
+    if ignore:
+        excl = ignore(src, lst)
+        lst = [x for x in lst if x not in excl]
+    for item in lst:
+        s = os.path.join(src, item)
+        d = os.path.join(dst, item)
+        if symlinks and os.path.islink(s):
+            if os.path.lexists(d):
+                os.remove(d)
+            os.symlink(os.readlink(s), d)
+            try:
+                st = os.lstat(s)
+                mode = stat.S_IMODE(st.st_mode)
+                os.lchmod(d, mode)
+            except Exception:
+                pass  # lchmod not available
+        elif os.path.isdir(s):
+            copytree(s, d, symlinks, ignore)
+        else:
+            shutil.copy2(s, d)

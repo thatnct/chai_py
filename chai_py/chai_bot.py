@@ -1,6 +1,7 @@
 import logging
 import sys
-from typing import List, final
+from typing import List
+from typing_extensions import final
 
 from .logger import ColoredFormatter
 from .types import Update, Message
