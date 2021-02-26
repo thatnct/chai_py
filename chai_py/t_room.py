@@ -16,6 +16,7 @@ class TRoom:
     def start(self):
         print("Starting TRoom. Press ctrl-c to escape.")
         self.setup_bots()
+        await self.send_message('__first')
         asyncio.run(self._loop())
 
     async def _loop(self):
