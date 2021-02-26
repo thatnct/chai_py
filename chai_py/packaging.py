@@ -10,9 +10,10 @@ import tempfile
 import warnings
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Type, AnyStr
+from typing import Type, AnyStr, List, Optional
 from zipfile import ZipFile, ZIP_DEFLATED
 
+import pkg_resources
 import requests
 
 from .chai_bot import ChaiBot
@@ -34,28 +35,33 @@ class Metadata:
     # Python class (N.B. not object!) that inherits from ChaiBot.
     input_class: Type[ChaiBot]
 
+    def verify(self):
+        """Performs basic checks to ensure validity of the metadata."""
+        assert isinstance(self.name, str)
+        assert len(self.name) >= 3, "Bot name has to be at least 3 characters"
 
-def package(metadata: Metadata):
+        try:
+            verify_image_url(self.image_url)
+        except Exception:
+            raise ValueError(f"Could not verify image url ({self.image_url})")
+
+        assert isinstance(self.color, str)
+        assert re.search(r"^(?:[0-9a-fA-F]{3}){1,2}$", self.color), \
+            "Color has to be provided as the alphanumeric part of the hex code (e.g. ffffff)"
+
+
+def package(metadata: Metadata, requirements: Optional[List[str]] = None):
     """Packages the chatbot into a single archive for deployment.
 
     Performs some preliminary checks on the metadata.
     Creates a package.zip file in the directory containing the file that contains the bot class.
 
     :param metadata:
+    :param requirements:
     :return:
     """
     print("Running verification checks on metadata.")
-    assert isinstance(metadata.name, str)
-    assert len(metadata.name) >= 3, "Bot name has to be at least 3 characters"
-
-    try:
-        verify_image_url(metadata.image_url)
-    except Exception:
-        raise ValueError(f"Could not verify image url ({metadata.image_url})")
-
-    assert isinstance(metadata.color, str)
-    assert re.search(r"^(?:[0-9a-fA-F]{3}){1,2}$", metadata.color), \
-        "Color has to be provided as the alphanumeric part of the hex code (e.g. ffffff)"
+    metadata.verify()
 
     bot_file = Path(inspect.getfile(metadata.input_class))
 
@@ -95,6 +101,10 @@ def package(metadata: Metadata):
         # Write metadata.json
         with (Path(temp_dir) / "metadata.json").open("w") as f:
             json.dump(metadata_dict, f)
+
+        # Write requirements.txt
+        if requirements:
+            write_valid_requirements_file(Path(temp_dir) / "requirements.txt", requirements)
 
         # Create zip
         zip_path = bot_file.parent / "package.zip"
@@ -172,3 +182,22 @@ def copytree(src, dst, symlinks=False, ignore=None):
             copytree(s, d, symlinks, ignore)
         else:
             shutil.copy2(s, d)
+
+
+def write_valid_requirements_file(path: AnyStr, requirements: List[str]):
+    """Writes a valid requirements.txt file.
+
+    Iterates through list of requirements, writing valid entries to the specified file,
+    Ignores (and prints) invalid requirements.
+
+    :param path:
+    :param requirements:
+    :return:
+    """
+    with Path(path).open("w") as f:
+        for requirement in requirements:
+            try:
+                pkg_resources.Requirement.parse(requirement)
+                f.write(requirement + "\n")
+            except Exception as e:
+                print(f"Ignoring requirement {requirement}: {e}")
