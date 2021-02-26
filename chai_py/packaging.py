@@ -7,6 +7,7 @@ import re
 import shutil
 import stat
 import tempfile
+import warnings
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Type, AnyStr
@@ -77,7 +78,18 @@ def package(metadata: Metadata):
             # Do not store pycache folder.
             if '__pycache__' in names:
                 return ['__pycache__']
-            return []
+            ignore_list = []
+            if src == temp_dir:
+                for name in names:
+                    if name.startswith("_"):
+                        warnings.warn(
+                            f"Ignoring file at bot root directory with leading underscore in name: {name}.",
+                            RuntimeWarning
+                        )
+                        ignore_list.append(name)
+                    if name == "main.py":
+                        raise RuntimeError("Bot root directory cannot contain a main.py file.")
+            return ignore_list
 
         copytree(bot_file.parent, temp_dir, ignore=ignore)
         # Write metadata.json
