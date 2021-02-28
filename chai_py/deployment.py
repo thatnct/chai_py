@@ -18,7 +18,7 @@ def upload_and_deploy(package: AnyStr, uid: str = GUEST_UID, key: str = GUEST_KE
 
     try:
         r = requests.get(
-            f"{DEFAULT_SIGNED_URL_CREATOR}?uid={uid}?key={key}"
+            f"{DEFAULT_SIGNED_URL_CREATOR}?uid={uid}&key={key}"
         )
         r.raise_for_status()
     except Exception:
