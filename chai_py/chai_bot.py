@@ -13,6 +13,10 @@ class ChaiBot:
     Chatbots must be made as a subclass of ChaiBot.
     The subclass must then implement the on_message() method, with the same signature.
     """
+    # When starting a conversation with the bot, the app first sends a message with this string.
+    # This message is hidden from the user.
+    # By detecting and responding to this string, the bot can conveniently provide a custom conversation opener.
+    FIRST_MESSAGE_STRING = "__first"
 
     @final
     def __init__(self, uid: str = "LOCAL_DEV"):
