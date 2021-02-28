@@ -18,6 +18,8 @@ import requests
 
 from .chai_bot import ChaiBot
 
+MAX_SUPPORTED_MEMORY = 4096
+
 
 @dataclass
 class Metadata:
@@ -50,9 +52,10 @@ class Metadata:
 
         assert isinstance(self.color, str)
         assert re.search(r"^(?:[0-9a-fA-F]{3}){1,2}$", self.color), \
-            "Color has to be provided as the alphanumeric part of the hex code (e.g. ffffff)"
+            f"Color has to be provided as the alphanumeric part of the hex code (e.g. ffffff), found {self.color}"
 
         assert isinstance(self.memory, int), f"Attribute .memory has to be an integer (found type {type(self.memory)})."
+        assert self.memory <= MAX_SUPPORTED_MEMORY, f"Attribute .memory has to be less than or equal to {MAX_SUPPORTED_MEMORY} (found {self.memory})."
 
 
 def package(metadata: Metadata, requirements: Optional[List[str]] = None):
