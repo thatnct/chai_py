@@ -14,9 +14,11 @@ class TRoom:
         self.messages = []
 
     def start(self):
+        if len(self.bots) == 0:
+            raise RuntimeError("Cannot start with no bots.")
         print("Starting TRoom. Press ctrl-c to escape.")
         self.setup_bots()
-        await self.send_message('__first')
+        await self.send_message(self.bots[0].FIRST_MESSAGE_STRING)
         asyncio.run(self._loop())
 
     async def _loop(self):
