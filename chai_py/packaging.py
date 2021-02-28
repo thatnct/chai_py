@@ -78,6 +78,7 @@ def package(metadata: Metadata, requirements: Optional[List[str]] = None):
         'description': metadata.description,
         'inputFile': bot_file.stem,
         'inputClass': metadata.input_class.__name__,
+        'memory': metadata.memory,
     }
     print("Prepared metadata:")
     pprint.pprint(metadata_dict)
