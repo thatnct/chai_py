@@ -35,6 +35,9 @@ class Metadata:
     # Python class (N.B. not object!) that inherits from ChaiBot.
     input_class: Type[ChaiBot]
 
+    # Total available memory for the bot in MB. This includes memory needed to store sources and data.
+    memory: int = 256
+
     def verify(self):
         """Performs basic checks to ensure validity of the metadata."""
         assert isinstance(self.name, str)
@@ -48,6 +51,8 @@ class Metadata:
         assert isinstance(self.color, str)
         assert re.search(r"^(?:[0-9a-fA-F]{3}){1,2}$", self.color), \
             "Color has to be provided as the alphanumeric part of the hex code (e.g. ffffff)"
+
+        assert isinstance(self.memory, int), f"Attribute .memory has to be an integer (found type {type(self.memory)})."
 
 
 def package(metadata: Metadata, requirements: Optional[List[str]] = None):
