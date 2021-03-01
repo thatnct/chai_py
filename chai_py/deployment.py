@@ -6,7 +6,7 @@ import requests
 from .defaults import DEFAULT_SIGNED_URL_CREATOR, GUEST_UID, GUEST_KEY
 
 
-def upload_and_deploy(package: AnyStr, uid: str = GUEST_UID, key: str = GUEST_KEY):
+def upload_and_deploy(package: AnyStr, uid: str = GUEST_UID, key: str = GUEST_KEY) -> str:
     """Uploads the given archive, triggering deployment of the chatbot.
 
     :param package: Path to the packaged chatbot zip.
@@ -31,6 +31,7 @@ def upload_and_deploy(package: AnyStr, uid: str = GUEST_UID, key: str = GUEST_KE
         r = requests.put(url, data=f, headers={'content-type': 'application/zip'})
         r.raise_for_status()
     print(f"Successfully uploaded {package}.")
+    return bot_uid
 
 
 def parse_signed_url_for_bot_uid(url: str):
