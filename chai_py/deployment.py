@@ -1,8 +1,9 @@
 import time
 from pathlib import Path
-from typing import AnyStr, TypedDict, Optional
+from typing import AnyStr, Optional
 
 import requests
+from typing_extensions import TypedDict
 
 from .defaults import DEFAULT_SIGNED_URL_CREATOR, GUEST_UID, GUEST_KEY
 
