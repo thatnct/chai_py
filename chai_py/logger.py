@@ -1,7 +1,11 @@
 import logging
+import sys
 from typing import Optional, Dict
 
-from colorama import Fore, Back, Style
+from colorama import init, Fore, Back, Style
+
+if sys.platform.startswith("win"):
+    init()
 
 
 class ColoredFormatter(logging.Formatter):
