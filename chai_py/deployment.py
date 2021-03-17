@@ -3,9 +3,10 @@ from pathlib import Path
 from typing import AnyStr, Optional
 
 import requests
+from halo import Halo
 from typing_extensions import TypedDict
 
-from .defaults import DEFAULT_SIGNED_URL_CREATOR, GUEST_UID, GUEST_KEY
+from .defaults import DEFAULT_SIGNED_URL_CREATOR, GUEST_UID, GUEST_KEY, DEFAULT_BOT_STATUS_ENDPOINT
 
 
 def upload_and_deploy(package: AnyStr, uid: str = GUEST_UID, key: str = GUEST_KEY) -> str:
@@ -72,30 +73,51 @@ def wait_for_deployment(bot_uid: str, sleep: float = 3):
     ]
     current_deployment_process = -1  # Index for BOT_DEPLOYMENT_PROCESS
     active_deployment = None  # TODO: Poll for existing deployment to detect new vesion later.
+    completed_processes = []
 
     MAXIMUM_ERROR_RETRIES = 10
     error_retries = 0
+
+    spinner = Halo(text="Polling for progress...")
+    spinner.start()
+
+    time.sleep(5)  # Initial wait to avoid bot status error.
+
     while True:
         try:
             status = get_bot_status(bot_uid)
-            status_str = status['status']
-            if status_str not in BOT_DEPLOYMENT_PROCESS:
-                raise ValueError(f"Unknown status: {status_str}.")
-            new_current_deployment_process = BOT_DEPLOYMENT_PROCESS.index(status_str)
-            if new_current_deployment_process != current_deployment_process:
-                print(f"{new_current_deployment_process} (from: {current_deployment_process})")
-                current_deployment_process = new_current_deployment_process
-            if 'activeDeployment' in status:
-                new_active_deployment = status['activeDeployment']
-                if active_deployment is None or new_active_deployment['timestamp'] != active_deployment['timestamp']:
-                    print(f"New active deployment: {new_active_deployment}")
-                    active_deployment = new_active_deployment
-                    break
         except Exception as e:
-            print(f"Error getting bot status (uid: {bot_uid}): {e}")
+            spinner.warn(f"Error getting bot status (uid: {bot_uid}): {e}")
             error_retries += 1
             if error_retries > MAXIMUM_ERROR_RETRIES:
+                spinner.fail()
                 print(f"Hit retry-on-error limit ({MAXIMUM_ERROR_RETRIES}).")
+                break
+            continue
+        status_str = status['status']
+        if status_str not in BOT_DEPLOYMENT_PROCESS:
+            raise ValueError(f"Unknown status: {status_str}.")
+        new_current_deployment_process = BOT_DEPLOYMENT_PROCESS.index(status_str)
+        if new_current_deployment_process != current_deployment_process:
+            # Completed new step(s)
+            for step in BOT_DEPLOYMENT_PROCESS[:new_current_deployment_process + 1]:
+                if step in completed_processes:
+                    continue
+                spinner.succeed(step)
+                completed_processes.append(step)
+            current_deployment_process = new_current_deployment_process
+            if current_deployment_process + 1 < len(BOT_DEPLOYMENT_PROCESS):
+                # If next step exists, set spinner to next step
+                spinner.start(f"Waiting for next step: {BOT_DEPLOYMENT_PROCESS[current_deployment_process + 1]}")
+            else:
+                # Next step does not exist; wait for final deployment confirmation
+                spinner.start("Waiting for active_deployment confirmation...")
+        if 'activeDeployment' in status:
+            new_active_deployment = status['activeDeployment']
+            if active_deployment is None or new_active_deployment['timestamp'] != active_deployment['timestamp']:
+                spinner.succeed("active_deployment")
+                print(f"New active deployment: {new_active_deployment}")
+                active_deployment = new_active_deployment
                 break
         time.sleep(sleep)
 
@@ -117,6 +139,18 @@ def get_bot_status(bot_uid: str) -> BotStatus:
     :param bot_uid:
     :return:
     """
-    r = requests.get(DEFAULT_SIGNED_URL_CREATOR, params={'bot_uid': bot_uid})
+    r = requests.get(DEFAULT_BOT_STATUS_ENDPOINT, params={'bot_uid': bot_uid})
     r.raise_for_status()
     return r.json()
+
+
+def advertise_deployed_bot(bot_uid: str) -> str:
+    """Prints the url along with additional guidance.
+
+    :param bot_uid:
+    :return: The url.
+    """
+    url = f"chai://chai.ml/{bot_uid}"
+    print(f"Check out the bot at {url}!")
+    print("(Ensure you have swiped past the start page of the app before clicking the link.)")
+    return url
