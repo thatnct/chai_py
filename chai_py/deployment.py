@@ -1,15 +1,20 @@
 import time
+import tkinter
 from pathlib import Path
 from typing import AnyStr, Optional
 
+import pyqrcode
 import requests
 from halo import Halo
 from typing_extensions import TypedDict
 
-from .defaults import DEFAULT_SIGNED_URL_CREATOR, GUEST_UID, GUEST_KEY, DEFAULT_BOT_STATUS_ENDPOINT
+from defaults import (DEFAULT_BOT_STATUS_ENDPOINT, DEFAULT_SIGNED_URL_CREATOR,
+                      GUEST_KEY, GUEST_UID)
 
 
-def upload_and_deploy(package: AnyStr, uid: str = GUEST_UID, key: str = GUEST_KEY) -> str:
+def upload_and_deploy(package: AnyStr,
+                      uid: str = GUEST_UID,
+                      key: str = GUEST_KEY) -> str:
     """Uploads the given archive, triggering deployment of the chatbot.
 
     :param package: Path to the packaged chatbot zip.
@@ -20,9 +25,7 @@ def upload_and_deploy(package: AnyStr, uid: str = GUEST_UID, key: str = GUEST_KE
     package = Path(package)
 
     try:
-        r = requests.get(
-            f"{DEFAULT_SIGNED_URL_CREATOR}?uid={uid}&key={key}"
-        )
+        r = requests.get(f"{DEFAULT_SIGNED_URL_CREATOR}?uid={uid}&key={key}")
         r.raise_for_status()
     except Exception:
         raise RuntimeError("Failed to retrieve signed URL.")
@@ -31,7 +34,9 @@ def upload_and_deploy(package: AnyStr, uid: str = GUEST_UID, key: str = GUEST_KE
     bot_uid = parse_signed_url_for_bot_uid(url)
     print(f"Received bot UID: {bot_uid}")
     with package.open("rb") as f:
-        r = requests.put(url, data=f, headers={'content-type': 'application/zip'})
+        r = requests.put(url,
+                         data=f,
+                         headers={'content-type': 'application/zip'})
         r.raise_for_status()
     print(f"Successfully uploaded {package}.")
     return bot_uid
@@ -66,7 +71,6 @@ def wait_for_deployment(bot_uid: str, sleep: float = 3):
         "signed_url_created",
         "processing_upload",
         "deploying",
-
         "initialized",
         # sent_message
         # (These two are repeatedly set as and when the function is restarted/invoked)
@@ -97,10 +101,13 @@ def wait_for_deployment(bot_uid: str, sleep: float = 3):
         status_str = status['status']
         if status_str not in BOT_DEPLOYMENT_PROCESS:
             raise ValueError(f"Unknown status: {status_str}.")
-        new_current_deployment_process = BOT_DEPLOYMENT_PROCESS.index(status_str)
+        new_current_deployment_process = BOT_DEPLOYMENT_PROCESS.index(
+            status_str)
         if new_current_deployment_process != current_deployment_process:
             # Completed new step(s)
-            for step in BOT_DEPLOYMENT_PROCESS[:new_current_deployment_process + 1]:
+            for step in BOT_DEPLOYMENT_PROCESS[:
+                                               new_current_deployment_process +
+                                               1]:
                 if step in completed_processes:
                     continue
                 spinner.succeed(step)
@@ -108,13 +115,16 @@ def wait_for_deployment(bot_uid: str, sleep: float = 3):
             current_deployment_process = new_current_deployment_process
             if current_deployment_process + 1 < len(BOT_DEPLOYMENT_PROCESS):
                 # If next step exists, set spinner to next step
-                spinner.start(f"Waiting for next step: {BOT_DEPLOYMENT_PROCESS[current_deployment_process + 1]}")
+                spinner.start(
+                    f"Waiting for next step: {BOT_DEPLOYMENT_PROCESS[current_deployment_process + 1]}"
+                )
             else:
                 # Next step does not exist; wait for final deployment confirmation
                 spinner.start("Waiting for active_deployment confirmation...")
         if 'activeDeployment' in status:
             new_active_deployment = status['activeDeployment']
-            if active_deployment is None or new_active_deployment['timestamp'] != active_deployment['timestamp']:
+            if active_deployment is None or new_active_deployment[
+                    'timestamp'] != active_deployment['timestamp']:
                 spinner.succeed("active_deployment")
                 print(f"New active deployment: {new_active_deployment}")
                 active_deployment = new_active_deployment
@@ -151,6 +161,27 @@ def advertise_deployed_bot(bot_uid: str) -> str:
     :return: The url.
     """
     url = f"chai://chai.ml/{bot_uid}"
-    print(f"Check out the bot at {url}!")
-    print("(Ensure you have swiped past the start page of the app before clicking the link.)")
+    qr_code = pyqrcode.create(url)
+    code_xbm = qr_code.xbm(scale=5)
+    window = tkinter.Tk()
+    code_bmp = tkinter.BitmapImage(data=code_xbm)
+    code_bmp.config(background="white")
+    label = tkinter.Label(window, image=code_bmp)
+    label.pack()
+    text_label = tkinter.Label(
+        window,
+        wraplength=200,
+        anchor=tkinter.W,
+        justify=tkinter.LEFT,
+        font=("Courier", 12),
+        text=
+        "Take a picture of this QR code on your phone to open the chai app!"
+    )
+    text_label.pack()
+    window.update()
+    print("Take a picture of the QR code on your phone to speak to your chat AI in the app.")
+    print(f"Or check out the bot using: {url}!")
+    print(
+        "(Ensure you have swiped past the start page of the mobile app before clicking the link.)"
+    )
     return url
