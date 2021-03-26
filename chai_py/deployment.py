@@ -1,20 +1,16 @@
 import time
-import tkinter
 from pathlib import Path
 from typing import AnyStr, Optional
 
-import pyqrcode
 import requests
+import segno
 from halo import Halo
 from typing_extensions import TypedDict
 
-from defaults import (DEFAULT_BOT_STATUS_ENDPOINT, DEFAULT_SIGNED_URL_CREATOR,
-                      GUEST_KEY, GUEST_UID)
+from defaults import DEFAULT_BOT_STATUS_ENDPOINT, DEFAULT_SIGNED_URL_CREATOR, GUEST_KEY, GUEST_UID
 
 
-def upload_and_deploy(package: AnyStr,
-                      uid: str = GUEST_UID,
-                      key: str = GUEST_KEY) -> str:
+def upload_and_deploy(package: AnyStr, uid: str = GUEST_UID, key: str = GUEST_KEY) -> str:
     """Uploads the given archive, triggering deployment of the chatbot.
 
     :param package: Path to the packaged chatbot zip.
@@ -34,9 +30,7 @@ def upload_and_deploy(package: AnyStr,
     bot_uid = parse_signed_url_for_bot_uid(url)
     print(f"Received bot UID: {bot_uid}")
     with package.open("rb") as f:
-        r = requests.put(url,
-                         data=f,
-                         headers={'content-type': 'application/zip'})
+        r = requests.put(url, data=f, headers={'content-type': 'application/zip'})
         r.raise_for_status()
     print(f"Successfully uploaded {package}.")
     return bot_uid
@@ -123,8 +117,7 @@ def wait_for_deployment(bot_uid: str, sleep: float = 3):
                 spinner.start("Waiting for active_deployment confirmation...")
         if 'activeDeployment' in status:
             new_active_deployment = status['activeDeployment']
-            if active_deployment is None or new_active_deployment[
-                    'timestamp'] != active_deployment['timestamp']:
+            if active_deployment is None or new_active_deployment['timestamp'] != active_deployment['timestamp']:
                 spinner.succeed("active_deployment")
                 print(f"New active deployment: {new_active_deployment}")
                 active_deployment = new_active_deployment
@@ -155,33 +148,33 @@ def get_bot_status(bot_uid: str) -> BotStatus:
 
 
 def advertise_deployed_bot(bot_uid: str) -> str:
-    """Prints the url along with additional guidance.
+    """Displays the url, a QR code, along with additional guidance.
 
     :param bot_uid:
     :return: The url.
     """
     url = f"chai://chai.ml/{bot_uid}"
-    qr_code = pyqrcode.create(url)
-    code_xbm = qr_code.xbm(scale=5)
-    window = tkinter.Tk()
-    code_bmp = tkinter.BitmapImage(data=code_xbm)
-    code_bmp.config(background="white")
-    label = tkinter.Label(window, image=code_bmp)
-    label.pack()
-    text_label = tkinter.Label(
-        window,
-        wraplength=200,
-        anchor=tkinter.W,
-        justify=tkinter.LEFT,
-        font=("Courier", 12),
-        text=
-        "Take a picture of this QR code on your phone to open the chai app!"
-    )
-    text_label.pack()
-    window.update()
-    print("Take a picture of the QR code on your phone to speak to your chat AI in the app.")
-    print(f"Or check out the bot using: {url}!")
-    print(
-        "(Ensure you have swiped past the start page of the mobile app before clicking the link.)"
-    )
+    qr_code = segno.make_qr(url)
+    qr_code.terminal()
+
+    print("Scan the QR code with your phone to start a chat in the app!")
+    print(f"Or check it out at {url}")
+
+    while True:
+        print("\nEnter one of the following keys to perform additional actions:")
+        print(" [s] Save this QR code to an image file.")
+        print(" [o] Open QR code in external viewer (if your terminal does not display it correctly).")
+
+        key = input()
+        if key == "s":
+            path = input("Save QR code to: (Press [Enter] for default: 'qr.png') ")
+            if len(path) == 0:
+                path = "qr.png"
+            qr_code.save(path, scale=10)
+            print(f"Saved QR code to {path}.")
+        elif key == "o":
+            qr_code.show(scale=10)
+        else:
+            break
+
     return url
