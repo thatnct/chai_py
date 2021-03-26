@@ -7,28 +7,34 @@ import segno
 from halo import Halo
 from typing_extensions import TypedDict
 
-from defaults import DEFAULT_BOT_STATUS_ENDPOINT, DEFAULT_SIGNED_URL_CREATOR, GUEST_KEY, GUEST_UID
+from .defaults import DEFAULT_BOT_STATUS_ENDPOINT, DEFAULT_SIGNED_URL_CREATOR, GUEST_KEY, GUEST_UID
 
 
-def upload_and_deploy(package: AnyStr, uid: str = GUEST_UID, key: str = GUEST_KEY) -> str:
+def upload_and_deploy(package: AnyStr, uid: str = GUEST_UID, key: str = GUEST_KEY, bot_uid: str = None) -> str:
     """Uploads the given archive, triggering deployment of the chatbot.
 
     :param package: Path to the packaged chatbot zip.
     :param uid: Developer Unique Identifier. Defaults to a guest UID.
     :param key: Developer key. Defaults to a valid key for the guest UID.
-    :return bot_uid: The UID of the deployed bot.
+    :return bot_uid: Used to modify an existing bot: the UID of the previously-deployed bot.
     """
     package = Path(package)
-
     try:
-        r = requests.get(f"{DEFAULT_SIGNED_URL_CREATOR}?uid={uid}&key={key}")
-        r.raise_for_status()
+        r = requests.get(
+            f"{DEFAULT_SIGNED_URL_CREATOR}?uid={uid}&key={key}",
+            params={'uid': uid, 'key': key, 'bot_uid': bot_uid}
+        )
+        try:
+            r.raise_for_status()
+        except Exception as e:
+            raise RuntimeError(r.json())
     except Exception:
         raise RuntimeError("Failed to retrieve signed URL.")
 
     url = r.text
-    bot_uid = parse_signed_url_for_bot_uid(url)
-    print(f"Received bot UID: {bot_uid}")
+    if bot_uid is None:
+        bot_uid = parse_signed_url_for_bot_uid(url)
+        print(f"Received bot UID: {bot_uid}")
     with package.open("rb") as f:
         r = requests.put(url, data=f, headers={'content-type': 'application/zip'})
         r.raise_for_status()
@@ -95,13 +101,10 @@ def wait_for_deployment(bot_uid: str, sleep: float = 3):
         status_str = status['status']
         if status_str not in BOT_DEPLOYMENT_PROCESS:
             raise ValueError(f"Unknown status: {status_str}.")
-        new_current_deployment_process = BOT_DEPLOYMENT_PROCESS.index(
-            status_str)
+        new_current_deployment_process = BOT_DEPLOYMENT_PROCESS.index(status_str)
         if new_current_deployment_process != current_deployment_process:
             # Completed new step(s)
-            for step in BOT_DEPLOYMENT_PROCESS[:
-                                               new_current_deployment_process +
-                                               1]:
+            for step in BOT_DEPLOYMENT_PROCESS[:new_current_deployment_process + 1]:
                 if step in completed_processes:
                     continue
                 spinner.succeed(step)
