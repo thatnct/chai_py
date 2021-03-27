@@ -150,7 +150,7 @@ def get_bot_status(bot_uid: str) -> BotStatus:
     return r.json()
 
 
-def advertise_deployed_bot(bot_uid: str) -> str:
+def share_bot(bot_uid: str) -> str:
     """Displays the url, a QR code, along with additional guidance.
 
     :param bot_uid:
@@ -181,3 +181,6 @@ def advertise_deployed_bot(bot_uid: str) -> str:
             break
 
     return url
+
+
+advertise_deployed_bot = share_bot
