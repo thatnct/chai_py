@@ -8,15 +8,18 @@ with open('requirements.txt') as f:
 
 setuptools.setup(
     name="chaipy",
-    version="0.1.22",
-    author="Nexus",
-    author_email="nexus.chai@gmail.com",
+    version="0.1.29",
+    author="Chai",
+    author_email="dev@chai.ml",
     description="A developer interface for creating chatbots for the Chai app.",
     long_description=readme,
     long_description_content_type="text/markdown",
     packages=setuptools.find_packages(),
     python_requires='>=3.7',
     install_requires=requirements,
+    extras_require={
+        "notebook": ["nest_asyncio"],
+    },
     classifiers=[
         'Development Status :: 3 - Alpha',
         'Intended Audience :: Developers',
