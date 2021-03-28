@@ -107,56 +107,54 @@ def wait_for_deployment(bot_uid: str, sleep: float = 3):
     MAXIMUM_ERROR_RETRIES = 10
     error_retries = 0
 
-    spinner = Halo(text="Polling for progress...")
-    spinner.start()
-
-    time.sleep(5)  # Initial wait to avoid bot status error.
-
-    while True:
-        try:
-            status = get_bot_status(bot_uid)
-        except Exception as e:
-            spinner.warn(f"Error getting bot status (uid: {bot_uid}): {e}")
-            error_retries += 1
-            if error_retries > MAXIMUM_ERROR_RETRIES:
-                spinner.fail()
-                print(f"Hit retry-on-error limit ({MAXIMUM_ERROR_RETRIES}).")
-                break
-            continue
-        if existing_status is not None:
-            # Check if new timestamp is later than existing timestamp
-            if status['timestamp'] <= existing_status['timestamp']:
-                # Do not parse old version
+    with Halo(text="Polling for progress...") as spinner:
+        spinner.start()
+        time.sleep(5)  # Initial wait to avoid bot status error.
+        while True:
+            try:
+                status = get_bot_status(bot_uid)
+            except Exception as e:
+                spinner.warn(f"Error getting bot status (uid: {bot_uid}): {e}")
+                error_retries += 1
+                if error_retries > MAXIMUM_ERROR_RETRIES:
+                    spinner.fail()
+                    print(f"Hit retry-on-error limit ({MAXIMUM_ERROR_RETRIES}).")
+                    break
                 continue
-        status_str = status['status']
-        if status_str not in BOT_DEPLOYMENT_PROCESS:
-            raise ValueError(f"Unknown status: {status_str}.")
-        new_current_deployment_process = BOT_DEPLOYMENT_PROCESS.index(status_str)
-        if new_current_deployment_process != current_deployment_process:
-            # Completed new step(s)
-            for step in BOT_DEPLOYMENT_PROCESS[:new_current_deployment_process + 1]:
-                if step in completed_processes:
+            if existing_status is not None:
+                # Check if new timestamp is later than existing timestamp
+                if status['timestamp'] <= existing_status['timestamp']:
+                    # Do not parse old version
                     continue
-                spinner.succeed(step)
-                completed_processes.append(step)
-            current_deployment_process = new_current_deployment_process
-            if current_deployment_process + 1 < len(BOT_DEPLOYMENT_PROCESS):
-                # If next step exists, set spinner to next step
-                spinner.start(
-                    f"Waiting for next step: {BOT_DEPLOYMENT_PROCESS[current_deployment_process + 1]}"
-                )
-            else:
-                # Next step does not exist; wait for final deployment confirmation
-                spinner.start("Waiting for active_deployment confirmation...")
-        if 'activeDeployment' in status:
-            new_active_deployment = status['activeDeployment']
-            if existing_status is None \
-                    or ('activeDeployment' in existing_status
-                        and new_active_deployment['version'] > existing_status['activeDeployment']['version']):
-                spinner.succeed("active_deployment")
-                print(f"New active deployment: {new_active_deployment}")
-                break
-        time.sleep(sleep)
+            status_str = status['status']
+            if status_str not in BOT_DEPLOYMENT_PROCESS:
+                raise ValueError(f"Unknown status: {status_str}.")
+            new_current_deployment_process = BOT_DEPLOYMENT_PROCESS.index(status_str)
+            if new_current_deployment_process != current_deployment_process:
+                # Completed new step(s)
+                for step in BOT_DEPLOYMENT_PROCESS[:new_current_deployment_process + 1]:
+                    if step in completed_processes:
+                        continue
+                    spinner.succeed(step)
+                    completed_processes.append(step)
+                current_deployment_process = new_current_deployment_process
+                if current_deployment_process + 1 < len(BOT_DEPLOYMENT_PROCESS):
+                    # If next step exists, set spinner to next step
+                    spinner.start(
+                        f"Waiting for next step: {BOT_DEPLOYMENT_PROCESS[current_deployment_process + 1]}"
+                    )
+                else:
+                    # Next step does not exist; wait for final deployment confirmation
+                    spinner.start("Waiting for active_deployment confirmation...")
+            if 'activeDeployment' in status:
+                new_active_deployment = status['activeDeployment']
+                if existing_status is None \
+                        or ('activeDeployment' in existing_status
+                            and new_active_deployment['version'] > existing_status['activeDeployment']['version']):
+                    spinner.succeed("active_deployment")
+                    print(f"New active deployment: {new_active_deployment}")
+                    break
+            time.sleep(sleep)
 
 
 class ActiveDeployment(TypedDict):
