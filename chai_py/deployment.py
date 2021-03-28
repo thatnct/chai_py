@@ -8,6 +8,9 @@ from halo import Halo
 from typing_extensions import TypedDict
 
 from .defaults import DEFAULT_BOT_STATUS_ENDPOINT, DEFAULT_SIGNED_URL_CREATOR, GUEST_KEY, GUEST_UID
+from .notebook_utils import IS_NOTEBOOK, show_qr
+
+PREVIOUS_DEPLOYMENTS = {}
 
 
 def upload_and_deploy(package: AnyStr, uid: str = GUEST_UID, key: str = GUEST_KEY, bot_uid: str = None) -> str:
@@ -16,25 +19,44 @@ def upload_and_deploy(package: AnyStr, uid: str = GUEST_UID, key: str = GUEST_KE
     :param package: Path to the packaged chatbot zip.
     :param uid: Developer Unique Identifier. Defaults to a guest UID.
     :param key: Developer key. Defaults to a valid key for the guest UID.
-    :return bot_uid: Used to modify an existing bot: the UID of the previously-deployed bot.
+    :param bot_uid: Used to modify an existing bot: the UID of the previously-deployed bot.
+    :return bot_uid: The UID of the deployed bot
     """
     package = Path(package)
+
+    if package in PREVIOUS_DEPLOYMENTS:
+        previous_bot_uid = PREVIOUS_DEPLOYMENTS[package]
+        print("Detected previous deployment from this location. Use the same bot UID as before?")
+        print(f" [y] (default) Yes. Update the bot ({previous_bot_uid}).")
+        print(f" [n] No. Deploy as a new bot.")
+        input_key = input().lower()
+        if input_key == "y" or input_key == "":
+            bot_uid = previous_bot_uid
+            print(f"Using previous bot UID: {bot_uid}")
+        elif input_key == "n":
+            pass
+        else:
+            raise RuntimeError("Unknown input.")
+
     try:
         r = requests.get(
-            f"{DEFAULT_SIGNED_URL_CREATOR}?uid={uid}&key={key}",
+            DEFAULT_SIGNED_URL_CREATOR,
             params={'uid': uid, 'key': key, 'bot_uid': bot_uid}
         )
         try:
             r.raise_for_status()
-        except Exception as e:
+        except Exception:
             raise RuntimeError(r.json())
     except Exception:
         raise RuntimeError("Failed to retrieve signed URL.")
 
     url = r.text
     if bot_uid is None:
+        print("Creating new bot.")
         bot_uid = parse_signed_url_for_bot_uid(url)
         print(f"Received bot UID: {bot_uid}")
+    PREVIOUS_DEPLOYMENTS[package] = bot_uid
+
     with package.open("rb") as f:
         r = requests.put(url, data=f, headers={'content-type': 'application/zip'})
         r.raise_for_status()
@@ -154,30 +176,45 @@ def share_bot(bot_uid: str) -> str:
     """Displays the url, a QR code, along with additional guidance.
 
     :param bot_uid:
-    :return: The url.
+    :return: The url for the bot.
     """
     url = f"chai://chai.ml/{bot_uid}"
-    qr_code = segno.make_qr(url)
-    qr_code.terminal()
 
+    qr_code = segno.make_qr(url)
     print("Scan the QR code with your phone to start a chat in the app!")
     print(f"Or check it out at {url}")
 
-    while True:
-        print("\nEnter one of the following keys to perform additional actions:")
-        print(" [s] Save this QR code to an image file.")
-        print(" [o] Open QR code in external viewer (if your terminal does not display it correctly).")
+    if IS_NOTEBOOK:
+        show_qr(qr_code)
+    else:
+        qr_code.terminal()
 
-        key = input()
-        if key == "s":
-            path = input("Save QR code to: (Press [Enter] for default: 'qr.png') ")
-            if len(path) == 0:
-                path = "qr.png"
-            qr_code.save(path, scale=10)
-            print(f"Saved QR code to {path}.")
-        elif key == "o":
-            qr_code.show(scale=10)
+    def save():
+        path = input("Save QR code to: (Press [Enter] for default: 'qr.png') ")
+        if len(path) == 0:
+            path = "qr.png"
+        qr_code.save(path, scale=10)
+        print(f"Saved QR code to {path}.")
+
+    def open_():
+        qr_code.show(scale=10)
+
+    actions = {
+        "s": (save, "Save this QR code to an image file.")
+    }
+    if not IS_NOTEBOOK:
+        actions["o"] = (open_, "Open QR code in external viewer.")
+
+    while True:
+        print("\nEnter one of the following keys to perform additional actions (or [Enter] to exit):")
+        for key, action in actions.items():
+            print(f" [{key}] {action[1]}")
+
+        input_key = input().lower()
+        if input_key in actions:
+            actions[input_key][0]()
         else:
+            print("Exiting.")
             break
 
     return url
