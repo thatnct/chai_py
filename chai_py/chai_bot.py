@@ -14,8 +14,8 @@ class ChaiBot:
     The subclass must then implement the on_message() method, with the same signature.
     """
     # When starting a conversation with the bot, the app first sends a message with this string.
-    # This message is hidden from the user.
     # By detecting and responding to this string, the bot can conveniently provide a custom conversation opener.
+    # This attribute is only for convenience; overriding this string does not change the string the bot will receive.
     FIRST_MESSAGE_STRING = "__first"
 
     @final
