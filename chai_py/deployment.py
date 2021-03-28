@@ -94,12 +94,15 @@ def wait_for_deployment(bot_uid: str, sleep: float = 3):
         "processing_upload",
         "deploying",
         "initialized",
-        # sent_message
-        # (These two are repeatedly set as and when the function is restarted/invoked)
     ]
     current_deployment_process = -1  # Index for BOT_DEPLOYMENT_PROCESS
-    active_deployment = None  # TODO: Poll for existing deployment to detect new vesion later.
     completed_processes = []
+    existing_status = None
+    try:
+        existing_status = get_bot_status(bot_uid)
+        print(f"Found previous deployment: Version {existing_status['activeDeployment']['version']}")
+    except Exception:
+        pass
 
     MAXIMUM_ERROR_RETRIES = 10
     error_retries = 0
@@ -120,6 +123,11 @@ def wait_for_deployment(bot_uid: str, sleep: float = 3):
                 print(f"Hit retry-on-error limit ({MAXIMUM_ERROR_RETRIES}).")
                 break
             continue
+        if existing_status is not None:
+            # Check if new timestamp is later than existing timestamp
+            if status['timestamp'] <= existing_status['timestamp']:
+                # Do not parse old version
+                continue
         status_str = status['status']
         if status_str not in BOT_DEPLOYMENT_PROCESS:
             raise ValueError(f"Unknown status: {status_str}.")
@@ -142,10 +150,11 @@ def wait_for_deployment(bot_uid: str, sleep: float = 3):
                 spinner.start("Waiting for active_deployment confirmation...")
         if 'activeDeployment' in status:
             new_active_deployment = status['activeDeployment']
-            if active_deployment is None or new_active_deployment['timestamp'] != active_deployment['timestamp']:
+            if existing_status is None \
+                    or ('activeDeployment' in existing_status
+                        and new_active_deployment['version'] > existing_status['activeDeployment']['version']):
                 spinner.succeed("active_deployment")
                 print(f"New active deployment: {new_active_deployment}")
-                active_deployment = new_active_deployment
                 break
         time.sleep(sleep)
 
