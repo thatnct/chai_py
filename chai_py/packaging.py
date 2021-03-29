@@ -62,7 +62,7 @@ def package(metadata: Metadata, requirements: Optional[List[str]] = None):
     """Packages the chatbot into a single archive for deployment.
 
     Performs some preliminary checks on the metadata.
-    Creates a package.zip file in the directory containing the file that contains the bot class.
+    Creates a _package.zip file in the directory containing the file that contains the bot class.
 
     :param metadata:
     :param requirements:
