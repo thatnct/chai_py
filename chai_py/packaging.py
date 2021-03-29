@@ -79,7 +79,6 @@ def package(metadata: Metadata, requirements: Optional[List[str]] = None):
     print("Running verification checks on metadata.")
     metadata.verify(bot_file)
 
-
     metadata_dict = {
         'name': metadata.name,
         'imageUrl': metadata.image_url,
