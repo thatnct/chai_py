@@ -11,8 +11,6 @@ from typing_extensions import TypedDict
 from .defaults import DEFAULT_BOT_STATUS_ENDPOINT, DEFAULT_SIGNED_URL_CREATOR, GUEST_KEY, GUEST_UID
 from .notebook_utils import IS_NOTEBOOK, show_qr
 
-PREVIOUS_DEPLOYMENTS = {}
-
 
 def upload_and_deploy(package: AnyStr, uid: str = GUEST_UID, key: str = GUEST_KEY, bot_uid: str = None) -> str:
     """Uploads the given archive, triggering deployment of the chatbot.
@@ -25,8 +23,11 @@ def upload_and_deploy(package: AnyStr, uid: str = GUEST_UID, key: str = GUEST_KE
     """
     package = Path(package)
 
-    if package in PREVIOUS_DEPLOYMENTS:
-        previous_bot_uid = PREVIOUS_DEPLOYMENTS[package]
+    deployment_file = package.parent / "_deployment"
+
+    if deployment_file.exists() and bot_uid is None:
+        with deployment_file.open("r") as f:
+            previous_bot_uid = f.read().strip()
         print("Detected previous deployment from this location. Use the same bot UID as before?")
         print(f" [y] (default) Yes. Update the bot ({previous_bot_uid}).")
         print(f" [n] No. Deploy as a new bot.")
@@ -56,7 +57,8 @@ def upload_and_deploy(package: AnyStr, uid: str = GUEST_UID, key: str = GUEST_KE
         print("Creating new bot.")
         bot_uid = parse_signed_url_for_bot_uid(url)
         print(f"Received bot UID: {bot_uid}")
-    PREVIOUS_DEPLOYMENTS[package] = bot_uid
+    with deployment_file.open("w") as f:
+        f.write(bot_uid)
 
     with package.open("rb") as f:
         r = requests.put(url, data=f, headers={'content-type': 'application/zip'})
@@ -100,11 +102,15 @@ def wait_for_deployment(bot_uid: str, sleep: float = 3):
     completed_processes = []
     existing_status = None
     try:
-        existing_status = get_bot_status(bot_uid)
-        print(f"Found previous deployment: Version {existing_status['activeDeployment']['version']}")
+        _existing_status = get_bot_status(bot_uid)
+        if "activeDeployment" in _existing_status:
+            existing_status = _existing_status
+            print(f"Found previous deployment: Version {existing_status['activeDeployment']['version']}")
     except HTTPError as e:
         if e.response.status_code != 404:
             raise e
+        else:
+            print("Did not find previous deployment.")
 
     MAXIMUM_ERROR_RETRIES = 10
     error_retries = 0
@@ -125,7 +131,7 @@ def wait_for_deployment(bot_uid: str, sleep: float = 3):
                 continue
             if existing_status is not None:
                 # Check if new timestamp is later than existing timestamp
-                if status['timestamp'] <= existing_status['timestamp']:
+                if status['timestamp'] <= existing_status['activeDeployment']['timestamp']:
                     # Do not parse old version
                     continue
             status_str = status['status']
