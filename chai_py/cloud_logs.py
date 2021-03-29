@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import List
 
 import requests
@@ -39,6 +40,7 @@ def display_logs(logs: List[Log]):
     :return:
     """
     for log in logs:
-        print(f"===== LOG AT {log['timestamp']} (SEVERITY: {log['severity']}) =====")
+        timestamp = datetime.fromtimestamp(1617002881385 / 1000).isoformat(timespec='seconds')
+        print(f"===== LOG AT {timestamp} (SEVERITY: {log['severity']}) =====")
         print(log['log'])
         print("===== END LOG =====")
