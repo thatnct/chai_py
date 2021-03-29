@@ -106,6 +106,10 @@ def wait_for_deployment(bot_uid: str, sleep: float = 3):
         if "activeDeployment" in _existing_status:
             existing_status = _existing_status
             print(f"Found previous deployment: Version {existing_status['activeDeployment']['version']}")
+        elif "failedDeployment" in _existing_status:
+            existing_status = _existing_status
+            print(f"Found previous failed deployment: Version {existing_status['failedDeployment']['version']}")
+
     except HTTPError as e:
         if e.response.status_code != 404:
             raise e
@@ -131,7 +135,8 @@ def wait_for_deployment(bot_uid: str, sleep: float = 3):
                 continue
             if existing_status is not None:
                 # Check if new timestamp is later than existing timestamp
-                if status['timestamp'] <= existing_status['activeDeployment']['timestamp']:
+                existing_deployment = existing_status['activeDeployment'] if 'activeDeployment' in existing_status else existing_status['failedDeployment']
+                if status['timestamp'] <= existing_deployment['timestamp']:
                     # Do not parse old version
                     continue
             status_str = status['status']
@@ -162,10 +167,18 @@ def wait_for_deployment(bot_uid: str, sleep: float = 3):
                     spinner.succeed("active_deployment")
                     print(f"New active deployment: {new_active_deployment}")
                     break
+            if 'failedDeployment' in status:
+                new_failed_deployment = status['failedDeployment']
+                if existing_status is None \
+                        or ('failedDeployment' in existing_status
+                            and new_failed_deployment['version'] > existing_status['failedDeployment']['version']):
+                    spinner.fail("failed_deployment")
+                    print("Logs can be checked with the display_logs and get_logs functions.")
+                    break
             time.sleep(sleep)
 
 
-class ActiveDeployment(TypedDict):
+class Deployment(TypedDict):
     timestamp: int
     version: int
 
@@ -173,7 +186,8 @@ class ActiveDeployment(TypedDict):
 class BotStatus(TypedDict):
     status: str
     timestamp: int
-    activeDeployment: Optional[ActiveDeployment]
+    activeDeployment: Optional[Deployment]
+    failedDeployment: Optional[Deployment]
 
 
 def get_bot_status(bot_uid: str) -> BotStatus:
