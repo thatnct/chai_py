@@ -1,7 +1,9 @@
 # ChaiPy
 
-A developer interface for creating Chat AIs for the Chai app.
+![PyPI - Python Version](https://img.shields.io/pypi/pyversions/chaipy)
+![PyPI](https://img.shields.io/pypi/v/chaipy)
 
+A developer interface for creating Chat AIs for the Chai app.
 
 ## Usage
 
