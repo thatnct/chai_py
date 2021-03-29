@@ -40,10 +40,16 @@ class Metadata:
     # Total available memory for the bot in MB. This includes memory needed to store sources and data.
     memory: int = 256
 
-    def verify(self):
+    def verify(self, bot_file: Path):
         """Performs basic checks to ensure validity of the metadata."""
         assert isinstance(self.name, str)
-        assert len(self.name) >= 3, "Bot name has to be at least 3 characters"
+        assert len(self.name) >= 3, "Bot name has to be at least 3 characters."
+
+        assert len(self.description) > 0, "Bot has to have description."
+        assert self.input_class.__init__ is ChaiBot.__init__, \
+            "Do not override ChaiBot.__init__(). Override the setup() method instead."
+
+        assert not (bot_file.parent / "main.py").exists(), "Do not create a main.py file in your bot's root directory."
 
         try:
             verify_image_url(self.image_url)
@@ -68,10 +74,11 @@ def package(metadata: Metadata, requirements: Optional[List[str]] = None):
     :param requirements:
     :return:
     """
-    print("Running verification checks on metadata.")
-    metadata.verify()
-
     bot_file = Path(inspect.getfile(metadata.input_class))
+
+    print("Running verification checks on metadata.")
+    metadata.verify(bot_file)
+
 
     metadata_dict = {
         'name': metadata.name,
