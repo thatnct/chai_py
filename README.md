@@ -1,6 +1,6 @@
 # ChaiPy
 
-![ChaiPy](https://imgur.com/PEqv39q "ChaiPy")
+![ChaiPy](https://i.imgur.com/PEqv39q.png"ChaiPy")
 
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/chaipy)
 ![PyPI](https://img.shields.io/pypi/v/chaipy)
