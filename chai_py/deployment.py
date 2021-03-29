@@ -5,6 +5,7 @@ from typing import AnyStr, Optional
 import requests
 import segno
 from halo import Halo
+from requests import HTTPError
 from typing_extensions import TypedDict
 
 from .defaults import DEFAULT_BOT_STATUS_ENDPOINT, DEFAULT_SIGNED_URL_CREATOR, GUEST_KEY, GUEST_UID
@@ -101,8 +102,9 @@ def wait_for_deployment(bot_uid: str, sleep: float = 3):
     try:
         existing_status = get_bot_status(bot_uid)
         print(f"Found previous deployment: Version {existing_status['activeDeployment']['version']}")
-    except Exception:
-        pass
+    except HTTPError as e:
+        if e.response.status_code != 404:
+            raise e
 
     MAXIMUM_ERROR_RETRIES = 10
     error_retries = 0
