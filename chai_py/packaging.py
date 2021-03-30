@@ -8,7 +8,7 @@ import shutil
 import stat
 import tempfile
 import warnings
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Type, AnyStr, List, Optional
 from zipfile import ZipFile, ZIP_DEFLATED
@@ -16,6 +16,7 @@ from zipfile import ZipFile, ZIP_DEFLATED
 import pkg_resources
 import requests
 
+from .auth import get_auth
 from .chai_bot import ChaiBot
 
 MAX_SUPPORTED_MEMORY = 4096
@@ -30,12 +31,13 @@ class Metadata:
     image_url: str
     # The alphanumeric part of a hex color code. (E.g. ffffff)
     color: str
-    # Developer Unique ID.
-    developer_uid: str
     # Description of the bot.
     description: str
     # Python class (N.B. not object!) that inherits from ChaiBot.
     input_class: Type[ChaiBot]
+
+    # Developer Unique ID.
+    developer_uid: str = field(default_factory=lambda: get_auth().uid)
 
     # Total available memory for the bot in MB. This includes memory needed to store sources and data.
     memory: int = 256

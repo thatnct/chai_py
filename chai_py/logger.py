@@ -39,3 +39,17 @@ class ColoredFormatter(logging.Formatter):
                 'CRITICAL': Fore.RED + Back.WHITE + Style.BRIGHT,
             }
         )
+
+
+def get_logger():
+    formatter = ColoredFormatter.default_chai_formatter()
+    handler = logging.StreamHandler(sys.stdout)
+    handler.setFormatter(formatter)
+    logger = logging.getLogger('chai_py')
+    logger.handlers = []
+    logger.addHandler(handler)
+    logger.setLevel(logging.INFO)
+    return logger
+
+
+logger = get_logger()

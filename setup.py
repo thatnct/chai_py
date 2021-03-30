@@ -8,7 +8,7 @@ with open('requirements.txt') as f:
 
 setuptools.setup(
     name="chaipy",
-    version="0.2.10",
+    version="0.3.2",
     author="Chai",
     author_email="dev@chai.ml",
     description="A developer interface for creating chatbots for the Chai app.",

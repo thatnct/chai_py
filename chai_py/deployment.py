@@ -8,18 +8,18 @@ from halo import Halo
 from requests import HTTPError
 from typing_extensions import TypedDict
 
-from .defaults import DEFAULT_BOT_STATUS_ENDPOINT, DEFAULT_SIGNED_URL_CREATOR, GUEST_KEY, GUEST_UID
+from .auth import get_auth
+from .defaults import DEFAULT_BOT_STATUS_ENDPOINT, DEFAULT_SIGNED_URL_CREATOR
 from .notebook_utils import IS_NOTEBOOK, show_qr
+from .cloud_logs import display_logs, get_logs
 
 
-def upload_and_deploy(package: AnyStr, uid: str = GUEST_UID, key: str = GUEST_KEY, bot_uid: str = None) -> str:
+def upload_and_deploy(package: AnyStr, bot_uid: str = None) -> str:
     """Uploads the given archive, triggering deployment of the chatbot.
 
     :param package: Path to the packaged chatbot zip.
-    :param uid: Developer Unique Identifier. Defaults to a guest UID.
-    :param key: Developer key. Defaults to a valid key for the guest UID.
     :param bot_uid: Used to modify an existing bot: the UID of the previously-deployed bot.
-    :return bot_uid: The UID of the deployed bot
+    :return bot_uid: The UID of the deployed bot.
     """
     package = Path(package)
 
@@ -40,10 +40,11 @@ def upload_and_deploy(package: AnyStr, uid: str = GUEST_UID, key: str = GUEST_KE
         else:
             raise RuntimeError("Unknown input.")
 
+    auth = get_auth()
     try:
         r = requests.get(
             DEFAULT_SIGNED_URL_CREATOR,
-            params={'uid': uid, 'key': key, 'bot_uid': bot_uid}
+            params={'uid': auth.uid, 'key': auth.key, 'bot_uid': bot_uid}
         )
         try:
             r.raise_for_status()
@@ -119,6 +120,7 @@ def wait_for_deployment(bot_uid: str, sleep: float = 3):
     MAXIMUM_ERROR_RETRIES = 10
     error_retries = 0
 
+    start_time = time.time()
     with Halo(text="Polling for progress...") as spinner:
         spinner.start()
         time.sleep(5)  # Initial wait to avoid bot status error.
@@ -126,7 +128,7 @@ def wait_for_deployment(bot_uid: str, sleep: float = 3):
             try:
                 status = get_bot_status(bot_uid)
             except Exception as e:
-                spinner.warn(f"Error getting bot status (uid: {bot_uid}): {e}")
+                spinner.warn(f"Error getting bot status (UID: {bot_uid}): {e}")
                 error_retries += 1
                 if error_retries > MAXIMUM_ERROR_RETRIES:
                     spinner.fail()
@@ -173,8 +175,18 @@ def wait_for_deployment(bot_uid: str, sleep: float = 3):
                         or ('failedDeployment' in existing_status
                             and new_failed_deployment['version'] > existing_status['failedDeployment']['version']):
                     spinner.fail("failed_deployment")
-                    print("Logs can be checked with the display_logs and get_logs functions.")
+                    display_logs(
+                        get_logs(
+                            bot_uid=bot_uid,
+                            errors=True
+                        )
+                    )
+                    print("Full logs can be checked with the display_logs and get_logs functions.")
+
                     break
+            elapsed_time = time.time() - start_time
+            if elapsed_time > 2 * 60:
+                print("This deployment is taking an unexpectedly long time.")
             time.sleep(sleep)
 
 

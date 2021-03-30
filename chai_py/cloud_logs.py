@@ -1,10 +1,13 @@
+import sys
 from datetime import datetime
 from typing import List
 
 import requests
 from typing_extensions import TypedDict
 
+from .auth import get_auth
 from .defaults import DEFAULT_BOT_LOGS_ENDPOINT
+from .logger import logger
 
 
 class Log(TypedDict):
@@ -13,20 +16,23 @@ class Log(TypedDict):
     log: str
 
 
-def get_logs(bot_uid: str, uid: str, key: str) -> List[Log]:
+def get_logs(bot_uid: str, errors: bool = False) -> List[Log]:
     """Retrieves logs for specified bot.
 
-    :param bot_uid:
-    :param uid:
-    :param key:
+    Logs can only be pulled by the bot's developer.
+
+    :param bot_uid: Bot UID
+    :param errors: If True, only retrieves logs with severity: Error
     :return:
     """
+    auth = get_auth()
     r = requests.get(
         DEFAULT_BOT_LOGS_ENDPOINT,
         params={
-            'uid': uid,
-            'key': key,
+            'uid': auth.uid,
+            'key': auth.key,
             'bot_uid': bot_uid,
+            'errors': True if errors else None
         }
     )
     r.raise_for_status()
@@ -40,7 +46,10 @@ def display_logs(logs: List[Log]):
     :return:
     """
     for log in logs:
-        timestamp = datetime.fromtimestamp(1617002881385 / 1000).isoformat(timespec='seconds')
-        print(f"===== LOG AT {timestamp} (SEVERITY: {log['severity']}) =====")
-        print(log['log'])
-        print("===== END LOG =====")
+        timestamp = datetime.fromtimestamp(log['timestamp'] / 1000).isoformat(timespec='seconds')
+        severity = log['severity']
+        is_error = severity == 'ERROR'
+        _log = logger.error if is_error else logger.info
+        _log(f"===== LOG AT {timestamp} (SEVERITY: {severity}) =====")
+        print(log['log'], file=sys.stderr if is_error else sys.stdout, flush=True)
+        _log("===== END LOG =====")
