@@ -1,0 +1,20 @@
+from chai_py import ChaiBot, Update, TRoom
+from collections import Counter
+
+import asyncio
+
+
+class StatefulBot(ChaiBot):
+
+    def setup(self):
+        self.counter = Counter()
+
+    async def on_message(self, update: Update) -> str:
+
+        if update.latest_message.text == "__first":
+            return "Enter text to see the letter count: " 
+
+        self.counter += Counter(c for c in update.latest_message.text)
+
+        return self.counter.__str__()
+
