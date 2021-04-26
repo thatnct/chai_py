@@ -1,7 +1,5 @@
-from chai_py import ChaiBot, Update, TRoom
+from chai_py import ChaiBot, Update
 from collections import Counter
-
-import asyncio
 
 
 class StatefulBot(ChaiBot):
