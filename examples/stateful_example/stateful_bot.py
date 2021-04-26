@@ -9,7 +9,7 @@ class StatefulBot(ChaiBot):
 
     async def on_message(self, update: Update) -> str:
 
-        if update.latest_message.text == "__first":
+        if update.latest_message.text == self.FIRST_MESSAGE_STRING:
             return "Enter text to see the letter count: " 
 
         self.counter += Counter(c for c in update.latest_message.text)
