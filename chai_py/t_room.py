@@ -12,13 +12,22 @@ class TRoom:
         self.bots = bots
         self.conversation_id = str(uuid.uuid4())
         self.messages = []
-
-    def start(self):
         if len(self.bots) == 0:
             raise RuntimeError("Cannot start with no bots.")
         print("Starting TRoom. Press ctrl-c to escape.")
         self.setup_bots()
+
+    def chat(self):
         asyncio.run(self._loop())
+
+    def test_chat(self, messages):
+        asyncio.run(self._message_loop(messages))
+
+    async def _message_loop(self, messages):
+        await self.send_message(self.bots[0].FIRST_MESSAGE_STRING)
+
+        for message in messages:
+            await self.send_message(message)
 
     async def _loop(self):
         await self.send_message(self.bots[0].FIRST_MESSAGE_STRING)
@@ -72,3 +81,18 @@ class TRoom:
     async def _bot_on_message(bot: ChaiBot, update: Update):
         result = await bot.on_message(update)
         return bot, result
+
+
+if __name__ == "__main__":
+    class EchoBot(ChaiBot):
+
+        def setup(self):
+            pass
+
+        async def on_message(self, update: Update) -> str:
+            return f"Echo: {update.latest_message.text}"
+
+    t_room = TRoom([EchoBot()])
+    t_room.start()
+
+
