@@ -31,7 +31,7 @@ extensions = [
     'sphinx.ext.napoleon',
     'sphinx.ext.autodoc',
     'sphinx.ext.inheritance_diagram',
-    'autoapi.sphinx'
+    'autoapi.sphinx',
     "sphinx_rtd_theme",
 ]
 autoapi_modules = {'chai_py': None}
