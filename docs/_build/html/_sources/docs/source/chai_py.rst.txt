@@ -4,85 +4,19 @@ chai\_py package
 Submodules
 ----------
 
-chai\_py.auth module
---------------------
+.. toctree::
+   :maxdepth: 4
 
-.. automodule:: chai_py.auth
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-chai\_py.chai\_bot module
--------------------------
-
-.. automodule:: chai_py.chai_bot
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-chai\_py.cloud\_logs module
----------------------------
-
-.. automodule:: chai_py.cloud_logs
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-chai\_py.defaults module
-------------------------
-
-.. automodule:: chai_py.defaults
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-chai\_py.deployment module
---------------------------
-
-.. automodule:: chai_py.deployment
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-chai\_py.logger module
-----------------------
-
-.. automodule:: chai_py.logger
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-chai\_py.notebook\_utils module
--------------------------------
-
-.. automodule:: chai_py.notebook_utils
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-chai\_py.packaging module
--------------------------
-
-.. automodule:: chai_py.packaging
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-chai\_py.t\_room module
------------------------
-
-.. automodule:: chai_py.t_room
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-chai\_py.types module
----------------------
-
-.. automodule:: chai_py.types
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   chai_py.auth
+   chai_py.chai_bot
+   chai_py.cloud_logs
+   chai_py.defaults
+   chai_py.deployment
+   chai_py.logger
+   chai_py.notebook_utils
+   chai_py.packaging
+   chai_py.t_room
+   chai_py.types
 
 Module contents
 ---------------

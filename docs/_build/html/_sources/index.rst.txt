@@ -12,6 +12,7 @@ Welcome to ChaiPy's documentation!
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
+   chai_py
 
 
 
