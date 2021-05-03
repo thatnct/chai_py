@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>chai_py.types &mdash; ChaiPy  documentation</title>
+  <title>chai_py.t_room module &mdash; ChaiPy  documentation</title>
   
 
   
@@ -83,21 +83,11 @@
               
             
             
-              <p class="caption"><span class="caption-text">Contents</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../docs/chai_py.html">chai_py package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../docs/chai_py.auth.html">chai_py.auth module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../docs/chai_py.chai_bot.html">chai_py.chai_bot module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../docs/chai_py.cloud_logs.html">chai_py.cloud_logs module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../docs/chai_py.defaults.html">chai_py.defaults module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../docs/chai_py.deployment.html">chai_py.deployment module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../docs/chai_py.logger.html">chai_py.logger module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../docs/chai_py.notebook_utils.html">chai_py.notebook_utils module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../docs/chai_py.packaging.html">chai_py.packaging module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../docs/chai_py.t_room.html">chai_py.t_room module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../docs/chai_py.types.html">chai_py.types module</a></li>
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">chai_py.t_room module</a></li>
 </ul>
-
+</div>
             
           
         </div>
@@ -144,13 +134,13 @@
     
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
         
-      <li><code class="docutils literal notranslate"><span class="pre">chai_py.types</span></code></li>
+      <li>chai_py.t_room module</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
           
-            <a href="../_sources/chai_py/chai_py.types.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/docs/chai_py.t_room.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -163,8 +153,34 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="module-chai_py.types">
-<span id="chai-py-types"></span><h1><code class="docutils literal notranslate"><span class="pre">chai_py.types</span></code><a class="headerlink" href="#module-chai_py.types" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-chai_py.t_room">
+<span id="chai-py-t-room-module"></span><h1>chai_py.t_room module<a class="headerlink" href="#module-chai_py.t_room" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt id="chai_py.t_room.TRoom">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">chai_py.t_room.</span></code><code class="sig-name descname"><span class="pre">TRoom</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bots</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="chai_py.chai_bot.html#chai_py.chai_bot.ChaiBot" title="chai_py.chai_bot.ChaiBot"><span class="pre">chai_py.chai_bot.ChaiBot</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#chai_py.t_room.TRoom" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt id="chai_py.t_room.TRoom.chat">
+<code class="sig-name descname"><span class="pre">chat</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#chai_py.t_room.TRoom.chat" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="chai_py.t_room.TRoom.send_message">
+<em class="property"><span class="pre">async</span> </em><code class="sig-name descname"><span class="pre">send_message</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#chai_py.t_room.TRoom.send_message" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="chai_py.t_room.TRoom.setup_bots">
+<code class="sig-name descname"><span class="pre">setup_bots</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#chai_py.t_room.TRoom.setup_bots" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="chai_py.t_room.TRoom.test_chat">
+<code class="sig-name descname"><span class="pre">test_chat</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">messages</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#chai_py.t_room.TRoom.test_chat" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 </div>
 
 

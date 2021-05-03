@@ -1,0 +1,253 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>chai_py.chai_bot module &mdash; ChaiPy  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> ChaiPy
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">chai_py.chai_bot module</a></li>
+</ul>
+</div>
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">ChaiPy</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>chai_py.chai_bot module</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../_sources/docs/chai_py.chai_bot.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-chai_py.chai_bot">
+<span id="chai-py-chai-bot-module"></span><h1>chai_py.chai_bot module<a class="headerlink" href="#module-chai_py.chai_bot" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt id="chai_py.chai_bot.ChaiBot">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">chai_py.chai_bot.</span></code><code class="sig-name descname"><span class="pre">ChaiBot</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">uid</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'LOCAL_DEV'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#chai_py.chai_bot.ChaiBot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Base chatbot class.</p>
+<p>Chatbots must be made as a subclass of ChaiBot.
+The subclass must then implement the on_message() method, with the same signature.</p>
+<dl class="py attribute">
+<dt id="chai_py.chai_bot.ChaiBot.FIRST_MESSAGE_STRING">
+<code class="sig-name descname"><span class="pre">FIRST_MESSAGE_STRING</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'__first'</span></em><a class="headerlink" href="#chai_py.chai_bot.ChaiBot.FIRST_MESSAGE_STRING" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="chai_py.chai_bot.ChaiBot.get_messages">
+<em class="property"><span class="pre">async</span> </em><code class="sig-name descname"><span class="pre">get_messages</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">conversation_id</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="chai_py.types.html#chai_py.types.Message" title="chai_py.types.Message"><span class="pre">chai_py.types.Message</span></a><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#chai_py.chai_bot.ChaiBot.get_messages" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fetches a list of messages for the specified conversation.</p>
+<p>This function is provided when using bots in a :class:TRoom and in deployment.
+Do not override or create an implementation.</p>
+<p>&#64;param conversation_id:
+&#64;return:</p>
+<blockquote>
+<div><p>List of messages in the conversation, sorted by increasing timestamp (i.e. oldest first).</p>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py method">
+<dt id="chai_py.chai_bot.ChaiBot.on_message">
+<em class="property"><span class="pre">async</span> </em><code class="sig-name descname"><span class="pre">on_message</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">update</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="chai_py.types.html#chai_py.types.Update" title="chai_py.types.Update"><span class="pre">chai_py.types.Update</span></a></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">str</span><a class="headerlink" href="#chai_py.chai_bot.ChaiBot.on_message" title="Permalink to this definition">¶</a></dt>
+<dd><p>Event called when the bot receives a message.</p>
+<p>&#64;param update:
+&#64;return:</p>
+<blockquote>
+<div><p>String containing the reply.</p>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py method">
+<dt id="chai_py.chai_bot.ChaiBot.setup">
+<code class="sig-name descname"><span class="pre">setup</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#chai_py.chai_bot.ChaiBot.setup" title="Permalink to this definition">¶</a></dt>
+<dd><p>Any setup should be done by overriding this function.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="chai_py.chai_bot.ChaiBot.setup_logger">
+<code class="sig-name descname"><span class="pre">setup_logger</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#chai_py.chai_bot.ChaiBot.setup_logger" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, Chai.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

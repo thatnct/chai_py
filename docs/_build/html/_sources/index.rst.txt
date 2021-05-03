@@ -10,13 +10,24 @@ Welcome to ChaiPy's documentation!
     :members:
 
 .. toctree::
-   :maxdepth: 2
-   :caption: Contents:
-   chai_py
+   :maxdepth: 1
+   :caption: Contents
+   :titlesonly:
+
+   docs/chai_py
+   docs/chai_py.auth
+   docs/chai_py.chai_bot
+   docs/chai_py.cloud_logs
+   docs/chai_py.defaults
+   docs/chai_py.deployment
+   docs/chai_py.logger
+   docs/chai_py.notebook_utils
+   docs/chai_py.packaging
+   docs/chai_py.t_room
+   docs/chai_py.types
 
 
-
-Indices and tables
+Website Links
 ==================
 
 * :ref:`genindex`

@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>chai_py.logger &mdash; ChaiPy  documentation</title>
+  <title>chai_py.logger module &mdash; ChaiPy  documentation</title>
   
 
   
@@ -83,21 +83,11 @@
               
             
             
-              <p class="caption"><span class="caption-text">Contents</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../docs/chai_py.html">chai_py package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../docs/chai_py.auth.html">chai_py.auth module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../docs/chai_py.chai_bot.html">chai_py.chai_bot module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../docs/chai_py.cloud_logs.html">chai_py.cloud_logs module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../docs/chai_py.defaults.html">chai_py.defaults module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../docs/chai_py.deployment.html">chai_py.deployment module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../docs/chai_py.logger.html">chai_py.logger module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../docs/chai_py.notebook_utils.html">chai_py.notebook_utils module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../docs/chai_py.packaging.html">chai_py.packaging module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../docs/chai_py.t_room.html">chai_py.t_room module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../docs/chai_py.types.html">chai_py.types module</a></li>
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">chai_py.logger module</a></li>
 </ul>
-
+</div>
             
           
         </div>
@@ -144,13 +134,13 @@
     
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
         
-      <li><code class="docutils literal notranslate"><span class="pre">chai_py.logger</span></code></li>
+      <li>chai_py.logger module</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
           
-            <a href="../_sources/chai_py/chai_py.logger.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/docs/chai_py.logger.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -164,7 +154,31 @@
            <div itemprop="articleBody">
             
   <div class="section" id="module-chai_py.logger">
-<span id="chai-py-logger"></span><h1><code class="docutils literal notranslate"><span class="pre">chai_py.logger</span></code><a class="headerlink" href="#module-chai_py.logger" title="Permalink to this headline">¶</a></h1>
+<span id="chai-py-logger-module"></span><h1>chai_py.logger module<a class="headerlink" href="#module-chai_py.logger" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt id="chai_py.logger.ColoredFormatter">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">chai_py.logger.</span></code><code class="sig-name descname"><span class="pre">ColoredFormatter</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">colors</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#chai_py.logger.ColoredFormatter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">logging.Formatter</span></code></p>
+<p>Colored log formatter.
+Adapted from <a class="reference external" href="https://gist.github.com/joshbode/58fac7ababc700f51e2a9ecdebe563ad">https://gist.github.com/joshbode/58fac7ababc700f51e2a9ecdebe563ad</a>.</p>
+<dl class="py method">
+<dt id="chai_py.logger.ColoredFormatter.default_chai_formatter">
+<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">default_chai_formatter</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#chai_py.logger.ColoredFormatter.default_chai_formatter" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="chai_py.logger.ColoredFormatter.format">
+<code class="sig-name descname"><span class="pre">format</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">record</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">str</span><a class="headerlink" href="#chai_py.logger.ColoredFormatter.format" title="Permalink to this definition">¶</a></dt>
+<dd><p>Format the specified record as text.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt id="chai_py.logger.get_logger">
+<code class="sig-prename descclassname"><span class="pre">chai_py.logger.</span></code><code class="sig-name descname"><span class="pre">get_logger</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#chai_py.logger.get_logger" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </div>
 
 
