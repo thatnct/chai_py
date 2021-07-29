@@ -3,15 +3,16 @@ from pathlib import Path
 from typing import AnyStr, Optional
 
 import requests
+from requests import HTTPError
+
 import segno
 from halo import Halo
-from requests import HTTPError
 from typing_extensions import TypedDict
 
 from .auth import get_auth
-from .defaults import DEFAULT_BOT_STATUS_ENDPOINT, DEFAULT_SIGNED_URL_CREATOR
-from .notebook_utils import IS_NOTEBOOK, show_qr
 from .cloud_logs import display_logs, get_logs
+from .defaults import ENDPOINT
+from .notebook_utils import IS_NOTEBOOK, show_qr
 
 
 def upload_and_deploy(package: AnyStr, bot_uid: str = None) -> str:
@@ -42,8 +43,8 @@ def upload_and_deploy(package: AnyStr, bot_uid: str = None) -> str:
 
     auth = get_auth()
     try:
-        r = requests.get(
-            DEFAULT_SIGNED_URL_CREATOR,
+        r = requests.post(
+            ENDPOINT,
             params={'uid': auth.uid, 'key': auth.key, 'bot_uid': bot_uid}
         )
         try:
@@ -51,6 +52,7 @@ def upload_and_deploy(package: AnyStr, bot_uid: str = None) -> str:
         except Exception:
             raise RuntimeError(r.json())
     except Exception:
+        print(r.content, r.reason)
         raise RuntimeError("Failed to retrieve signed URL.")
 
     url = r.text
@@ -208,9 +210,24 @@ def get_bot_status(bot_uid: str) -> BotStatus:
     :param bot_uid:
     :return:
     """
-    r = requests.get(DEFAULT_BOT_STATUS_ENDPOINT, params={'bot_uid': bot_uid})
-    r.raise_for_status()
-    return r.json()
+    auth = get_auth()
+    try:
+        req = requests.get(
+            url=ENDPOINT,
+            params={
+                'uid': auth.uid,
+                'key': auth.key,
+                'bot_uid': bot_uid,
+                'item': 'status'
+                }
+        )
+        try:
+            req.raise_for_status()
+        except Exception:
+            raise RuntimeError(req.json())
+    except Exception:
+        raise RuntimeError(f"Failed to retrieve status for bot {bot_uid}.")
+    return req.json()
 
 
 def share_bot(bot_uid: str) -> str:
@@ -260,5 +277,28 @@ def share_bot(bot_uid: str) -> str:
 
     return url
 
+
+def delete_bot(bot_uid: str) -> str:
+    """
+    Uses an HTTPS request to trigger deletion of bot with specified UID.
+
+    :param bot_uid:
+    :return: The url for the bot.
+    """
+    auth = get_auth()
+    try:
+        req = requests.delete(
+            url=ENDPOINT,
+            params={'uid': auth.uid, 'key': auth.key, 'bot_uid': bot_uid}
+        )
+        try:
+            req.raise_for_status()
+        except Exception:
+            raise RuntimeError(req.json())
+    except Exception as exc:
+        raise RuntimeError(f"Failed to delete bot {bot_uid}.")
+
+    print(f"Successfully deleted {bot_uid}.")
+    return bot_uid
 
 advertise_deployed_bot = share_bot

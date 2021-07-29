@@ -3,10 +3,11 @@ from datetime import datetime
 from typing import List
 
 import requests
+
 from typing_extensions import TypedDict
 
 from .auth import get_auth
-from .defaults import DEFAULT_BOT_LOGS_ENDPOINT
+from .defaults import ENDPOINT
 from .logger import logger
 
 
@@ -27,11 +28,12 @@ def get_logs(bot_uid: str, errors: bool = False) -> List[Log]:
     """
     auth = get_auth()
     r = requests.get(
-        DEFAULT_BOT_LOGS_ENDPOINT,
+        ENDPOINT,
         params={
             'uid': auth.uid,
             'key': auth.key,
             'bot_uid': bot_uid,
+            'item': 'logs',
             'errors': True if errors else None
         }
     )
