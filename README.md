@@ -12,10 +12,18 @@ A developer interface for creating Chat AIs for the Chai app.
 A quick start guide is available [here](https://chai.ml/docs/), with a minimal example available on GitHub 
 [here](https://github.com/chai-nexus/chai_py_quickstart).
 
+
+## Testing
+
+### Testing using pytest manually
+
+Tests can be run using [pytest](http://pytest.org/).
+
+    $ python -m pytest
+
 ## Colab Notebook
 
 Alternatively, check out the [notebook](https://colab.research.google.com/drive/1YB6mQkcmisEBIHOjvGnWi0z9lLiaRNT5)! 
-
 
 ## Requirements
 

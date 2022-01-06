@@ -1,8 +1,26 @@
-from .defaults import GUEST_UID, GUEST_KEY
-from .logger import logger
+from chai_py.defaults import GUEST_UID, GUEST_KEY
+from chai_py.logger import logger
 
 
-class ChaiAuth:
+def get_auth():
+    return auth
+
+
+def set_auth(uid: str, key: str):
+    """
+    Sets package-wide developer authentication.
+
+    :param uid: Developer Unique Identifier.
+    :param key: Developer key.
+    :return:
+    """
+    global auth
+    auth = ChaiAuth(uid=uid, key=key)
+
+
+class ChaiAuth():
+    """Credentials for developer API. """
+
     def __init__(self, uid: str, key: str):
         self._uid = uid
         self._key = key
@@ -29,18 +47,3 @@ class ChaiAuth:
 
 
 auth = ChaiAuth(uid=GUEST_UID, key=GUEST_KEY)
-
-
-def set_auth(uid: str, key: str):
-    """Sets package-wide developer authentication.
-
-    :param uid: Developer Unique Identifier.
-    :param key: Developer key.
-    :return:
-    """
-    global auth
-    auth = ChaiAuth(uid=uid, key=key)
-
-
-def get_auth():
-    return auth
