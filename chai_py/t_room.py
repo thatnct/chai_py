@@ -1,10 +1,10 @@
+from typing import Sequence
 import asyncio
 import time
 import uuid
-from typing import Sequence
 
-from .chai_bot import ChaiBot
-from .types import Update, LatestMessage, Message, MessageKind
+from chai_py.chai_bot import ChaiBot
+from chai_py.types import Update, LatestMessage, Message, MessageKind
 
 
 class TRoom:

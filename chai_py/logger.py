@@ -1,8 +1,9 @@
+from typing import Optional, Dict
 import logging
 import sys
-from typing import Optional, Dict
 
 from colorama import init, Fore, Back, Style
+
 
 if sys.platform.startswith("win"):
     init()

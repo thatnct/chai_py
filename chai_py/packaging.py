@@ -1,3 +1,7 @@
+from dataclasses import dataclass, field
+from pathlib import Path
+from typing import Type, AnyStr, List, Optional
+from zipfile import ZipFile, ZIP_DEFLATED
 import imghdr
 import inspect
 import json
@@ -8,16 +12,12 @@ import shutil
 import stat
 import tempfile
 import warnings
-from dataclasses import dataclass, field
-from pathlib import Path
-from typing import Type, AnyStr, List, Optional
-from zipfile import ZipFile, ZIP_DEFLATED
 
 import pkg_resources
 import requests
 
-from .auth import get_auth
-from .chai_bot import ChaiBot
+from chai_py.auth import get_auth
+from chai_py.chai_bot import ChaiBot
 
 MAX_SUPPORTED_MEMORY = 4096
 

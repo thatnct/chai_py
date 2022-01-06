@@ -1,10 +1,11 @@
+from typing import List
 import logging
 import sys
-from typing import List
+
 from typing_extensions import final
 
-from .logger import ColoredFormatter
-from .types import Update, Message
+from chai_py.logger import ColoredFormatter
+from chai_py.types import Update, Message
 
 
 class ChaiBot:

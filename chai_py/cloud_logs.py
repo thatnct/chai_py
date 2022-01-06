@@ -1,14 +1,13 @@
-import sys
 from datetime import datetime
 from typing import List
-
-import requests
+import sys
 
 from typing_extensions import TypedDict
+import requests
 
-from .auth import get_auth
-from .defaults import ENDPOINT
-from .logger import logger
+from chai_py.auth import get_auth
+from chai_py.defaults import ENDPOINT
+from chai_py.logger import logger
 
 
 class Log(TypedDict):

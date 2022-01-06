@@ -1,18 +1,17 @@
-import time
 from pathlib import Path
 from typing import AnyStr, Optional
+import time
 
-import requests
-from requests import HTTPError
-
-import segno
 from halo import Halo
+from requests import HTTPError
 from typing_extensions import TypedDict
+import requests
+import segno
 
-from .auth import get_auth
-from .cloud_logs import display_logs, get_logs
-from .defaults import ENDPOINT
-from .notebook_utils import IS_NOTEBOOK, show_qr
+from chai_py.auth import get_auth
+from chai_py.cloud_logs import display_logs, get_logs
+from chai_py.defaults import ENDPOINT
+from chai_py.notebook_utils import IS_NOTEBOOK, show_qr
 
 
 def upload_and_deploy(package: AnyStr, bot_uid: str = None) -> str:
