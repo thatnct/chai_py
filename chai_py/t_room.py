@@ -70,7 +70,7 @@ class TRoom:
             print(f">>> {result}")
             self.messages.append(
                 Message(
-                    sender_uid=bot.uid,
+                    sender_uid=bot._bot_uid,
                     timestamp=timestamp,
                     message_kind=MessageKind.TEXT,
                     content=result,

@@ -20,7 +20,7 @@ class ChaiBot:
 
     @final
     def __init__(self, uid: str = "LOCAL_DEV"):
-        self.uid = uid
+        self._bot_uid = uid
         self.logger = logging.getLogger(self.__class__.__name__)
         self.setup_logger()
 
