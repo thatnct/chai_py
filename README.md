@@ -5,17 +5,18 @@
 
 A developer interface for creating Chat AIs for the Chai app.
 
-## Usage
+## Install
+
+You can install chai_py using pip
+
+    $ pip install -U chai_py
 
 ## Local development
 
 A quick start guide is available [here](https://chai.ml/docs/), with a minimal example available on GitHub 
 [here](https://github.com/chai-nexus/chai_py_quickstart).
 
-
-## Testing
-
-### Testing using pytest manually
+### Testing
 
 Tests can be run using [pytest](http://pytest.org/).
 
