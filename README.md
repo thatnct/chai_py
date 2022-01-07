@@ -22,10 +22,6 @@ Tests can be run using [pytest](http://pytest.org/).
 
     $ python -m pytest
 
-## Colab Notebook
-
-Alternatively, check out the [notebook](https://colab.research.google.com/drive/1YB6mQkcmisEBIHOjvGnWi0z9lLiaRNT5)! 
-
 ## Requirements
 
 Python 3.7 is required due to the usage of `dataclasses`.
