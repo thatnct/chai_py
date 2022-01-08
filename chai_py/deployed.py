@@ -58,7 +58,6 @@ def activate_bot(bot_uid: str):
     js = {'status': 'active'}
     resp = requests.post(url, json=js, auth=_credentials())
     assert resp.status_code == 200, resp.text
-    return js
 
 
 def deactivate_bot(bot_uid: str):
@@ -72,7 +71,6 @@ def deactivate_bot(bot_uid: str):
     js = {'status': 'inactive'}
     resp = requests.post(url, json=js, auth=_credentials())
     assert resp.status_code == 200, resp.text
-    return js
 
 
 def _get_developer_uid():

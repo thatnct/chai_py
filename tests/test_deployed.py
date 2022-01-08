@@ -48,8 +48,7 @@ def test_activate_bot(post):
         json=mock.Mock(return_value={})
     )
 
-    res = dep.activate_bot('bot_123')
-    assert res == {'status': 'active'}
+    dep.activate_bot('bot_123')
 
     post.assert_called_with(
         '{}/chatbots/bot_123'.format(defaults.API_HOST),
@@ -65,8 +64,7 @@ def test_deactivate_bot(post):
         json=mock.Mock(return_value={})
     )
 
-    res = dep.deactivate_bot('bot_123')
-    assert res == {'status': 'inactive'}
+    dep.deactivate_bot('bot_123')
 
     post.assert_called_with(
         '{}/chatbots/bot_123'.format(defaults.API_HOST),
