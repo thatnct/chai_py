@@ -4,7 +4,7 @@ from enum import Enum
 import requests
 
 from chai_py.auth import get_auth
-from chai_py import types, defaults
+from chai_py import defaults
 
 
 class BotStatus(Enum):
