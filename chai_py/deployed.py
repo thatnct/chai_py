@@ -4,7 +4,7 @@ from enum import Enum
 import requests
 
 from chai_py.auth import get_auth
-from chai_py import defaults
+from chai_py import defaults, error
 
 
 class BotStatus(Enum):
@@ -43,7 +43,7 @@ def get_bots():
     url = '{}/chatbots'.format(defaults.API_HOST)
     js = {'developer_uid': _get_developer_uid()}
     resp = requests.get(url, json=js, auth=_credentials())
-    assert resp.status_code == 200, resp.text
+    _check_response_for_error(resp)
     return _parse_multiple_bots_response(resp)
 
 
@@ -57,7 +57,7 @@ def activate_bot(bot_uid: str):
     url = '{}/chatbots/{}'.format(defaults.API_HOST, bot_uid)
     js = {'status': 'active'}
     resp = requests.post(url, json=js, auth=_credentials())
-    assert resp.status_code == 200, resp.text
+    _check_response_for_error(resp)
 
 
 def deactivate_bot(bot_uid: str):
@@ -70,7 +70,12 @@ def deactivate_bot(bot_uid: str):
     url = '{}/chatbots/{}'.format(defaults.API_HOST, bot_uid)
     js = {'status': 'inactive'}
     resp = requests.post(url, json=js, auth=_credentials())
-    assert resp.status_code == 200, resp.text
+    _check_response_for_error(resp)
+
+
+def _check_response_for_error(resp):
+    if resp.status_code != 200:
+        raise error.APIError('Bad response ({}): {}'.format(resp.status_code, resp.text))
 
 
 def _get_developer_uid():

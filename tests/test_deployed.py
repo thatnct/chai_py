@@ -3,7 +3,7 @@ import pytest
 import requests
 
 from chai_py import deployed as dep
-from chai_py import defaults
+from chai_py import defaults, error
 
 
 @pytest.fixture(autouse=True)
@@ -41,6 +41,19 @@ def test_get_developer_bots(get):
     assert bot == expected
 
 
+@mock.patch('requests.get')
+def test_get_developer_bots_raises_on_error(get):
+    get.return_value = mock.Mock(
+        status_code=404,
+        text='unhandled error'
+    )
+
+    with pytest.raises(error.APIError) as ex:
+        dep.get_bots()
+
+    assert 'unhandled error' in str(ex)
+
+
 @mock.patch('requests.post')
 def test_activate_bot(post):
     post.return_value = mock.Mock(
@@ -53,8 +66,22 @@ def test_activate_bot(post):
     post.assert_called_with(
         '{}/chatbots/bot_123'.format(defaults.API_HOST),
         json={'status': 'active'},
-        auth=requests.auth.HTTPBasicAuth('test_uid', 'test_key')
+        auth=mock.ANY
     )
+
+
+@mock.patch('requests.post')
+def test_activate_bot_raises_on_error(post):
+    post.return_value = mock.Mock(
+        status_code=401,
+        text='Permission denied'
+    )
+
+    with pytest.raises(error.APIError) as ex:
+        dep.activate_bot('bot_123')
+
+    assert '401' in str(ex)
+    assert 'Permission denied' in str(ex)
 
 
 @mock.patch('requests.post')
@@ -69,5 +96,19 @@ def test_deactivate_bot(post):
     post.assert_called_with(
         '{}/chatbots/bot_123'.format(defaults.API_HOST),
         json={'status': 'inactive'},
-        auth=requests.auth.HTTPBasicAuth('test_uid', 'test_key')
+        auth=mock.ANY
     )
+
+
+@mock.patch('requests.post')
+def test_deactivate_bot_raises_on_error(post):
+    post.return_value = mock.Mock(
+        status_code=401,
+        text='Permission denied'
+    )
+
+    with pytest.raises(error.APIError) as ex:
+        dep.deactivate_bot('bot_123')
+
+    assert '401' in str(ex)
+    assert 'Permission denied' in str(ex)
