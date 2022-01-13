@@ -11,14 +11,9 @@ You can install chai using pip
 
     $ pip install -U chai_py
 
-## Local development
-
-A quick start guide is available [here](https://chai.ml/docs/), with a minimal example available on GitHub 
-[here](https://github.com/chai-nexus/chai_py_quickstart).
-
 ## Documentation
 
-An API guide is available on the [Chai website](https://chai.ml/python-api)
+An API guide is available on the [Chai website](https://chai.ml/doc/python-api)
 
 ## Testing
 
