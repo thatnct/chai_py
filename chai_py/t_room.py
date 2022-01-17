@@ -7,7 +7,9 @@ from chai_py.chai_bot import ChaiBot
 from chai_py.types import Update, LatestMessage, Message, MessageKind
 
 
-class TRoom:
+class TRoom():
+    """Code for testing your bot locally. """
+
     def __init__(self, bots: Sequence[ChaiBot]):
         self.bots = bots
         self.conversation_id = str(uuid.uuid4())
@@ -83,16 +85,4 @@ class TRoom:
         return bot, result
 
 
-if __name__ == "__main__":
-    class EchoBot(ChaiBot):
-
-        def setup(self):
-            pass
-
-        async def on_message(self, update: Update) -> str:
-            return f"Echo: {update.latest_message.text}"
-
-    t_room = TRoom([EchoBot()])
-    t_room.start()
-
-
+TestRoom = TRoom
