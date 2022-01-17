@@ -27,6 +27,6 @@ Python 3.7 or later is required.
 
 ## Get Involved
 
-Speak to us on [Whatsapp](https://chat.whatsapp.com/GvdhL4f3304FxcAxZEbpi4)
+Speak to us on [Whatsapp](https://chat.whatsapp.com/Btbz9tYOpyG72oqI4NfGE1)
 
 Come join us on [Discord](https://discord.gg/YfrVwBtYWb)!
