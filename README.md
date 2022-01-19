@@ -9,7 +9,7 @@ A developer interface for creating Chat AIs for the Chai app.
 
 You can install chai using pip
 
-    $ pip install -U chai_py
+    $ pip install -U chaipy
 
 ## Documentation
 
