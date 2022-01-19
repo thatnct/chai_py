@@ -100,20 +100,17 @@ def package(metadata: Metadata, requirements: Optional[List[str]] = None, path: 
     with tempfile.TemporaryDirectory() as temp_dir:
         # Copy files in bot directory
         def ignore(src, names):
-            # Do not store pycache folder.
-            if '__pycache__' in names:
-                return ['__pycache__']
             ignore_list = []
-            if src == temp_dir:
-                for name in names:
-                    if name.startswith("_"):
-                        warnings.warn(
-                            f"Ignoring file at bot root directory with leading underscore in name: {name}.",
-                            RuntimeWarning
-                        )
-                        ignore_list.append(name)
-                    if name == "main.py":
-                        raise RuntimeError("Bot root directory cannot contain a main.py file.")
+            for name in names:
+                # e.g .git folder is not wanted
+                if name.startswith('.') or name.startswith('_package.zip'):
+                    warnings.warn(
+                        f"Ignoring files which start with '.': {name}.",
+                        RuntimeWarning
+                    )
+                    ignore_list.append(name)
+                if name == "main.py":
+                    raise RuntimeError("Bot root directory cannot contain a main.py file.")
             return ignore_list
 
         copytree(bot_file.parent, temp_dir, ignore=ignore)
