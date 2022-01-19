@@ -66,14 +66,16 @@ class Metadata:
         assert self.memory <= MAX_SUPPORTED_MEMORY, f"Attribute .memory has to be less than or equal to {MAX_SUPPORTED_MEMORY} (found {self.memory})."
 
 
-def package(metadata: Metadata, requirements: Optional[List[str]] = None):
+def package(metadata: Metadata, requirements: Optional[List[str]] = None, path: Optional[str] = None):
     """Packages the chatbot into a single archive for deployment.
 
     Performs some preliminary checks on the metadata.
-    Creates a _package.zip file in the directory containing the file that contains the bot class.
+    Creates a _package.zip file in the directory containing the file that contains the bot class
+    unless a path is provided.
 
     :param metadata:
     :param requirements:
+    :param path:
     :return:
     """
     bot_file = Path(inspect.getfile(metadata.input_class))
@@ -124,10 +126,14 @@ def package(metadata: Metadata, requirements: Optional[List[str]] = None):
             write_valid_requirements_file(Path(temp_dir) / "requirements.txt", requirements)
 
         # Create zip
-        zip_path = bot_file.parent / "_package.zip"
-        with zip_path.open("wb") as f:
+        if path is None:
+            path = bot_file.parent / "_package.zip"
+        else:
+            path = Path(path)
+
+        with path.open("wb") as f:
             zipfile_from_folder(temp_dir, f)
-        print(f"Created zip package at {zip_path}.")
+        print(f"Created zip package at {path}.")
 
 
 def verify_image_url(url: str):
