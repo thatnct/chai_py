@@ -166,7 +166,7 @@ def wait_for_deployment(bot_uid: str, sleep: float = 3):
                 new_active_deployment = status['activeDeployment']
                 if existing_status is None \
                         or ('activeDeployment' in existing_status
-                            and new_active_deployment['version'] >= existing_status['activeDeployment']['version']):
+                            and new_active_deployment['version'] > existing_status['activeDeployment']['version']):
                     spinner.succeed("active_deployment")
                     print(f"New active deployment: {new_active_deployment}")
                     break
