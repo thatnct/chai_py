@@ -7,4 +7,4 @@ DEFAULT_BOT_STATUS_ENDPOINT = "https://europe-west2-chai-959f8.cloudfunctions.ne
 DEFAULT_BOT_LOGS_ENDPOINT = "https://europe-west2-chai-959f8.cloudfunctions.net/bot-logs"
 ENDPOINT = "https://europe-west2-chai-959f8.cloudfunctions.net/chai-api"
 
-API_HOST = 'http://api.chai.ml'
+API_HOST = 'https://api.chai.ml'
