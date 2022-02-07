@@ -42,7 +42,7 @@ def get_bots():
     """
     url = '{}/chatbots'.format(defaults.API_HOST)
     js = {'developer_uid': _get_developer_uid()}
-    resp = requests.get(url, json=js, auth=_credentials())
+    resp = requests.get(url, params=js, auth=_credentials())
     _check_response_for_error(resp)
     return _parse_multiple_bots_response(resp)
 
